@@ -1,0 +1,31 @@
+{
+  "name": "react-reality-lab",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "22.12.0"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "vitest run",
+    "verify": "node scripts/verify.mjs",
+    "fast": "node scripts/run.mjs --mode fast",
+    "measure": "node scripts/run.mjs --mode publication",
+    "results:merge": "node scripts/merge-results.mjs"
+  },
+  "dependencies": {
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "scheduler": "0.27.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "6.0.5",
+    "playwright": "1.62.1",
+    "vite": "8.2.1",
+    "vitest": "4.1.10"
+  }
+}

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React Reality Lab — measured realm</title>
+    <script>
+      // This hook must exist before ReactDOM is evaluated. It observes commits only;
+      // the lab never reads fibers, lanes, flags, queues, or reconciler internals.
+      (() => {
+        const renderers = new Map();
+        const commits = [];
+        window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
+          supportsFiber: true,
+          checkDCE() {},
+          inject(renderer) {
+            const id = renderers.size + 1;
+            renderers.set(id, renderer);
+            return id;
+          },
+          onCommitFiberRoot(rendererId) {
+            commits.push({ rendererId, at: performance.now() });
+          },
+          onCommitFiberUnmount() {},
+          getFiberRoots() { return new Set(); },
+          _commits: commits,
+        };
+      })();
+    </script>
+  </head>
+  <body>
+    <main id="measured-root"></main>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

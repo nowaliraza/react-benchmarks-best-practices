@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.vite/
+artifacts/runs/
+artifacts/merged/
+playwright-report/
+test-results/
+*.log
