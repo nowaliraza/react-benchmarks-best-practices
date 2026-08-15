@@ -54,7 +54,9 @@ function startPreview() {
   let diagnostics = '';
   child.stdout.on('data', (chunk) => { diagnostics += chunk; });
   child.stderr.on('data', (chunk) => { diagnostics += chunk; });
-  const exited = new Promise((resolve) => child.once('exit', (code, signal) => resolve({ code, signal })));
+  // `close` fires after stdio closes, so startup failures retain their complete
+  // diagnostics instead of racing the final stderr chunk.
+  const exited = new Promise((resolve) => child.once('close', (code, signal) => resolve({ code, signal })));
   return { child, diagnostics: () => diagnostics, exited };
 }
 
