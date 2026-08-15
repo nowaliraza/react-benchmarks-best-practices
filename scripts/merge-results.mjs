@@ -1,20 +1,27 @@
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { projectRoot } from '../src/harness/manifest.js';
+import { projectRoot, repositoryState } from '../src/harness/manifest.js';
 import { summarizeObservations } from '../src/harness/stats.js';
 
 const runsRoot = path.join(projectRoot, 'artifacts/runs');
 const entries = await readdir(runsRoot, { withFileTypes: true }).catch(() => []);
 const completed = [];
+const repository = await repositoryState();
 for (const entry of entries.filter((candidate) => candidate.isDirectory())) {
   try {
     const result = JSON.parse(await readFile(path.join(runsRoot, entry.name, 'result.json'), 'utf8'));
-    if (result.gate.issues.length === 0 && result.operations.every(({ status }) => status === 'completed')) completed.push(result);
+    if (
+      result.manifest.mode === 'publication'
+      && result.manifest.publishable === true
+      && result.manifest.implementationCommit === repository.commit
+      && result.gate.issues.length === 0
+      && result.operations.every(({ status }) => status === 'completed')
+    ) completed.push(result);
   } catch {
     // Partial runs intentionally remain on disk but cannot be merged.
   }
 }
-if (completed.length === 0) throw new Error('No completed compatible runs found.');
+if (completed.length === 0) throw new Error(`No completed publishable runs found for implementation commit ${repository.commit}.`);
 
 const compatibilityFields = [
   'reactVersion', 'reactDomVersion', 'schedulerVersion', 'chromeVersion', 'nodeVersion',
