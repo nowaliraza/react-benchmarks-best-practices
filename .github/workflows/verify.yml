@@ -19,3 +19,10 @@ jobs:
           chrome-version: 145.0.7632.159
       - run: npm ci
       - run: npm run verify
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-artifacts
+          path: artifacts/runs/
+          if-no-files-found: ignore
+          retention-days: 14

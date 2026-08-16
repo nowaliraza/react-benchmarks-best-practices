@@ -66,6 +66,7 @@ describe('behavior fault injection', () => {
   const reference = {
     canonicalMarkup: '<output>same</output>', state: { value: 1 }, domIdentityPreserved: true,
     focus: 'input', selection: { start: 1, end: 1 },
+    liveProperties: { 'input:0': { value: 'same' } }, lifecycle: [],
   };
 
   it.each([
@@ -84,6 +85,12 @@ describe('behavior fault injection', () => {
       pass: 'behavior-frame', instruments: ['requestAnimationFrame', 'component-bodies'],
     }]);
     expect(issues.map(({ code }) => code)).toContain('instrument-leakage');
+  });
+
+  it('rejects uncontrolled live-property behavior changes', () => {
+    const candidate = structuredClone(reference);
+    candidate.liveProperties['input:0'].value = 'changed';
+    expect(validateBehaviorControl(reference, candidate, ['behavior']).map(({ code }) => code)).toContain('behavior-regression');
   });
 
   it('rejects timeouts and empty results', () => {

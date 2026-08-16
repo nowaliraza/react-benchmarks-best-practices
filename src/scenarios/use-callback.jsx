@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useMeasuredStateIdentity } from './instrumentation.js';
 
 const stableIncrement = (setter) => setter((value) => value + 1);
@@ -17,6 +17,7 @@ export function UseCallbackScenario({ variant, recorder, apiRef }) {
   const [count, rawSetCount] = useState(0);
   const [unrelated, rawSetUnrelated] = useState(0);
   const outputRef = useRef(null);
+  const inputRef = useRef(null);
 
   const setCount = useCallback((value) => {
     recorder.record('setter-call', { setter: 'count' });
@@ -39,6 +40,10 @@ export function UseCallbackScenario({ variant, recorder, apiRef }) {
   }[variant];
 
   useMeasuredStateIdentity(outputRef, apiRef);
+  useLayoutEffect(() => {
+    inputRef.current.focus();
+    inputRef.current.setSelectionRange(1, 4);
+  }, []);
   apiRef.current.action = async () => setUnrelated((value) => value + 1);
   apiRef.current.state = () => ({ count, unrelated });
   apiRef.current.consistency = () => ({ displayedEqualsState: outputRef.current?.textContent === `${count}:${unrelated}` });
@@ -46,6 +51,7 @@ export function UseCallbackScenario({ variant, recorder, apiRef }) {
   return (
     <section data-scenario="use-callback">
       <output ref={outputRef} id="state">{count}:{unrelated}</output>
+      <input ref={inputRef} id="selection-control" defaultValue="select me" aria-label="selection control" />
       <Child onIncrement={callback} recorder={recorder} />
     </section>
   );

@@ -60,3 +60,7 @@ Publication micro-timing cells use 8 iterations × 5 rotations × 2 processes. R
 The manifest records exact React, ReactDOM, Scheduler, Chrome, Node, protocol, registry, implementation, bundle, and amendment identifiers alongside orders, instruments, budgets, process count, CPU, viewport, workload, timeouts, and tree cleanliness.
 
 Publication refuses version mismatches, missing manifest vectors, an uncommitted or dirty tree (including untracked source), incomplete operations, failed controls, instrument leakage, and nondeterministic required direction. Raw samples are retained. Null and inconclusive findings are publishable; retractions never delete history.
+
+## Gate proof
+
+Verification derives a clean publication envelope from its browser-backed artifact and plants each Phase 0B defect independently. A run passes only when all named faults produce their intended structured rejection codes, including the real preview-startup failure probe. The complete matrix is retained with the verification artifact.

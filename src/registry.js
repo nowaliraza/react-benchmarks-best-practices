@@ -21,7 +21,7 @@ export const registry = [
     applicability: 'React 19.2.8, client render, memoized child, unrelated synchronous parent update.',
     control: {
       referenceVariant: 'module-stable',
-      compare: ['markup', 'behavior', 'domIdentity', 'state', 'declaredDifferences'],
+      compare: ['markup', 'behavior', 'domIdentity', 'focus', 'selection', 'state', 'declaredDifferences'],
       intraVariant: ['displayed count equals state count'],
       declaredDifferences: {},
     },

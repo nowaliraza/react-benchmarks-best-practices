@@ -92,7 +92,9 @@ export function createBrowserRunner({ scenarioId, variantId, pass, root }) {
         root,
         apiRef.current,
         [],
-        recorder.events.map(({ event, at }) => ({ event, at })),
+        recorder.events
+          .filter(({ event }) => event.startsWith('effect-') || event.startsWith('ref-'))
+          .map(({ event, at }) => ({ event, at })),
       ),
     };
   }

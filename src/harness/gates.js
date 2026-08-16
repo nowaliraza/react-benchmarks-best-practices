@@ -66,13 +66,20 @@ export function validateBehaviorControl(reference, candidate, compare) {
   const issues = [];
   const checks = {
     markup: ['canonicalMarkup', 'unexpected-dom-difference'],
-    behavior: ['state', 'behavior-regression'],
     domIdentity: ['domIdentityPreserved', 'dom-identity-regression'],
     focus: ['focus', 'focus-regression'],
     selection: ['selection', 'selection-regression'],
     state: ['state', 'state-regression'],
   };
   for (const dimension of compare) {
+    if (dimension === 'behavior') {
+      const expected = { liveProperties: reference.liveProperties, lifecycle: reference.lifecycle?.map(({ event }) => event) };
+      const actual = { liveProperties: candidate.liveProperties, lifecycle: candidate.lifecycle?.map(({ event }) => event) };
+      if (stable(expected) !== stable(actual)) {
+        issues.push(issue('behavior-regression', 'Behavior differs from the reference.', { expected, actual }));
+      }
+      continue;
+    }
     if (!checks[dimension]) continue;
     const [field, code] = checks[dimension];
     if (stable(reference[field]) !== stable(candidate[field])) {
@@ -147,10 +154,11 @@ export function validateObservations(registry, observations, operations = []) {
         const consistency = behaviorRow.observed.behavior?.consistency ?? {};
         const values = Object.entries(consistency).filter(([key]) => key.endsWith('EqualsRight') || key === 'displayedEqualsState' || key === 'checksumFinite' || key === 'final');
         const failed = values.some(([, value]) => value !== true);
+        const tearing = consistency.leftEqualsRight === false;
         if (failed && variant.expectedGateFailure) {
           expectedRejections.push(issue('expected-intra-variant-rejection', `Caught planted failure ${scenario.id}/${variant.id}.`));
         } else if (failed) {
-          issues.push(issue('intra-variant-invariant', `Intra-variant invariant failed for ${scenario.id}/${variant.id}.`, { consistency }));
+          issues.push(issue(tearing ? 'tearing' : 'intra-variant-invariant', `Intra-variant invariant failed for ${scenario.id}/${variant.id}.`, { scenarioId: scenario.id, variantId: variant.id, consistency }));
         } else if (!failed && variant.expectedGateFailure) {
           issues.push(issue('planted-failure-missed', `Expected gate failure was not caught for ${scenario.id}/${variant.id}.`));
         }
