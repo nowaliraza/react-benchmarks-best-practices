@@ -123,6 +123,13 @@ export function completeAttemptRows(rows, processItems) {
   return rows.every((row) => expected.delete(scheduleKey(row))) && expected.size === 0;
 }
 
+export function finalizePublishability(manifest, gate, operations) {
+  manifest.publishable = manifest.publishable
+    && gate.issues.length === 0
+    && operations.every(({ status }) => status === 'completed');
+  return manifest.publishable;
+}
+
 async function appendJsonLine(file, value) {
   await appendFile(file, `${JSON.stringify(value)}\n`);
 }
@@ -324,6 +331,7 @@ export async function executeLab({ mode = 'fast', chapter = null, runId = timest
     registryHash: await hashFile(path.join(projectRoot, 'src/registry.js')),
   };
   const gate = validateRun({ registry: selectedRegistry, manifest, observations, operations, expected, publication: mode === 'publication' });
+  finalizePublishability(manifest, gate, operations);
   const result = {
     schemaVersion: 1,
     manifest,
@@ -340,6 +348,7 @@ export async function executeLab({ mode = 'fast', chapter = null, runId = timest
       message: 'Assembled result failed schema validation.',
       details: { errors: schemaResult.error.issues },
     });
+    finalizePublishability(manifest, result.gate, operations);
   }
   await Promise.all([
     writeFile(path.join(runDirectory, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`),

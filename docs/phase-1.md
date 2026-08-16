@@ -17,7 +17,7 @@ Together with the Phase 0A `useCallback` tracer and calibration scenarios, these
 
 The first exploratory run matched all preregistered relations except `real-same-idle-same`. React 19.2.8 invoked the component and fired the root commit hook for the post-idle same-value dispatch even though it caused no second DOM mutation. The original artifact remains under `artifacts/runs/2026-08-16T07-45-40-381Z`, and the prediction change is recorded in `AMENDMENTS.md` before publication sampling.
 
-The first Chapter 3 publication attempt also exposed a frame-gate defect: `flushSync` presented `1` before `2`, while the generic gate counted only a state literally named `intermediate`. That artifact is retained but superseded. The gate and prediction were amended before the final Chapter 3 run.
+The first Chapter 3 publication attempt also exposed a frame-gate defect: `flushSync` presented `1` before `2`, while the generic gate counted only a state literally named `intermediate`. A later corrected-gate run observed zero intermediate frames in both processes. The release therefore treats presentation as variable while retaining the reproducible two-commit result. Both prediction changes and superseded artifacts remain documented.
 
 ## Evidence boundary
 

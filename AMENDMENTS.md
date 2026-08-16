@@ -40,3 +40,14 @@ This append-only ledger records prediction changes made after any relevant measu
 - Published finding affected: none; the flawed artifact was not committed into the versioned dataset release.
 - Gate change: `intermediateFrames` now uses the scenario’s declared semantic intermediate state (`1` for this scenario).
 - Author: React Reality Lab implementation session.
+
+## Phase 1 flushSync presentation-variability amendment — 2026-08-16
+
+- Registry record: `flush-sync-boundary`.
+- Prior amended prediction: `flush-between` would present one to two sampled intermediate frames.
+- New prediction: `flush-between` reliably creates two commits, while intermediate presentation is not guaranteed and may range from zero to two sampled frames.
+- Reason: the corrected final-commit run produced zero intermediate frames in both fresh processes, contradicting the earlier run that produced one. Commit counts remained stable at two throughout.
+- Data viewed beforehand: `artifacts/runs/2026-08-16T11-39-54-971Z` and `artifacts/runs/2026-08-16T11-44-24-441Z`.
+- Published finding affected: none; neither superseded Chapter 3 artifact was committed into the versioned release.
+- Interpretation: commit count is reproducible evidence; intermediate presentation is environment/timing-sensitive semantic evidence and is reported as variable.
+- Author: React Reality Lab implementation session.
