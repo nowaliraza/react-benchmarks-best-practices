@@ -73,7 +73,7 @@ export async function createManifest({
     cpu: cpus().map(({ model, speed }) => ({ model, speedMHz: speed })),
     viewport: { width: 1280, height: 720, deviceScaleFactor: 1 },
     workloadSize: {
-      phase: '2-development',
+      phase: '2-concurrency',
       calibrated: true,
       renderItems: 240,
       renderItemMs: 0.55,

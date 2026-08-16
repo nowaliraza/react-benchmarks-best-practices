@@ -63,3 +63,15 @@ This append-only ledger records prediction changes made after any relevant measu
 - Published finding affected: none; both artifacts are non-publishable development runs.
 - Registry clarification: applicability now states that the urgent update is forced with `flushSync`; expected relations and null criteria are unchanged.
 - Author: React Reality Lab implementation session.
+
+## Phase 2 manifest phase-label correction — 2026-08-17
+
+- Affected manifest field: `workloadSize.phase`.
+- Prior value: `2-development`.
+- Corrected value: `2-concurrency`.
+- Prediction change: none.
+- Reason: the workload had already been calibrated and frozen, so the development label was inaccurate for publication artifacts.
+- Data viewed beforehand: `artifacts/runs/2026-08-16T19-05-52-787Z`.
+- Published finding affected: none; the copied dataset was moved to `/tmp/react-reality-phase2-superseded-1786907250808` before it was committed.
+- Replacement policy: rerun the complete Chapter 4 publication matrix from the corrected clean implementation commit.
+- Author: React Reality Lab implementation session.
