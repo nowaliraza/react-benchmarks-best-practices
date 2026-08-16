@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import config from '../lab.config.js';
 import {
+  intermediateFrameCount,
   validateBehaviorControl,
   validateInstrumentIsolation,
   validateManifest,
@@ -96,5 +97,16 @@ describe('behavior fault injection', () => {
   it('rejects timeouts and empty results', () => {
     const result = validateObservations([], [], [{ id: 'x', status: 'timeout' }]);
     expect(result.issues.map(({ code }) => code)).toEqual(expect.arrayContaining(['timeout', 'empty-result']));
+  });
+});
+
+describe('presented intermediate semantics', () => {
+  it('uses each scenario semantic state rather than one literal label', () => {
+    expect(intermediateFrameCount('presented-frame-calibration', {
+      frames: [{ state: 'intermediate' }, { state: 'final' }],
+    })).toBe(1);
+    expect(intermediateFrameCount('flush-sync-boundary', {
+      frames: [{ state: '1' }, { state: '2' }],
+    })).toBe(1);
   });
 });

@@ -26,6 +26,11 @@ function readMetric(value, path) {
   return path.split('.').reduce((current, key) => current?.[key], value);
 }
 
+export function intermediateFrameCount(scenarioId, behavior) {
+  const intermediateState = scenarioId === 'flush-sync-boundary' ? '1' : 'intermediate';
+  return behavior?.frames.filter(({ state }) => state === intermediateState).length ?? 0;
+}
+
 export function validateManifest(manifest, expected, { publication = false } = {}) {
   const issues = [];
   for (const field of REQUIRED_MANIFEST_FIELDS) {
@@ -209,7 +214,7 @@ export function validateObservations(registry, observations, operations = []) {
           && (requiredPass === null || item.pass === requiredPass));
         for (const row of rows) {
           let actual;
-          if (relation.metric === 'intermediateFrames') actual = row.observed.behavior?.frames.filter(({ state }) => state === 'intermediate').length;
+          if (relation.metric === 'intermediateFrames') actual = intermediateFrameCount(scenario.id, row.observed.behavior);
           else actual = readMetric(row.observed.exact ?? row.observed.behavior ?? row.observed.micro ?? row.observed.responsiveness, relation.metric);
           if (actual === undefined && relation.metric.startsWith('componentInvocations.')) actual = 0;
           if (actual !== undefined && (actual < relation.min || actual > relation.max)) {

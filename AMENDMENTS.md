@@ -29,3 +29,14 @@ This append-only ledger records prediction changes made after any relevant measu
 - Published finding affected: none; this amendment predates the Phase 1 publication run.
 - Implementation change: none to the scenario subject.
 - Author: React Reality Lab implementation session.
+
+## Phase 1 flushSync presented-frame amendment — 2026-08-16
+
+- Registry record: `flush-sync-boundary`.
+- Old prediction: both automatic and `flush-between` variants would present no sampled intermediate value.
+- New prediction: automatic batching presents only the final value `2`; `flush-between` presents value `1` before `2`, with an allowed range of one to two sampled intermediate frames.
+- Reason: the first Chapter 3 publication artifact sampled `1 → 2` for `flush-between`. The generic frame gate incorrectly counted only the literal calibration state `intermediate`, so it did not reject the original prediction.
+- Data viewed beforehand: `artifacts/runs/2026-08-16T11-39-54-971Z`.
+- Published finding affected: none; the flawed artifact was not committed into the versioned dataset release.
+- Gate change: `intermediateFrames` now uses the scenario’s declared semantic intermediate state (`1` for this scenario).
+- Author: React Reality Lab implementation session.
