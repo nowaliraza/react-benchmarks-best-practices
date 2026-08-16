@@ -5,6 +5,16 @@ import {
   PresentedFrameCalibration,
   ResponsivenessCalibration,
 } from './calibrations.jsx';
+import {
+  ExecutionContextBatching,
+  FlushSyncBoundary,
+  LocalVersusLiftedState,
+  MemoPropIdentity,
+  RenderCommitDomBoundary,
+  SameValueUpdates,
+  StateUpdateQueue,
+  StructuralSharing,
+} from './foundations.jsx';
 
 export const scenarios = {
   'use-callback-semantics': UseCallbackScenario,
@@ -12,6 +22,14 @@ export const scenarios = {
   'responsiveness-calibration': ResponsivenessCalibration,
   'presented-frame-calibration': PresentedFrameCalibration,
   'intra-consistency-fixture': ConsistencyFixture,
+  'render-commit-dom-boundary': RenderCommitDomBoundary,
+  'local-versus-lifted-state': LocalVersusLiftedState,
+  'memo-prop-identity': MemoPropIdentity,
+  'structural-sharing': StructuralSharing,
+  'execution-context-batching': ExecutionContextBatching,
+  'state-update-queue': StateUpdateQueue,
+  'same-value-updates': SameValueUpdates,
+  'flush-sync-boundary': FlushSyncBoundary,
 };
 
 // Fixture for concurrency scenarios: mutation is scheduled by the host task,

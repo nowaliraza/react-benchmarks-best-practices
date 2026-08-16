@@ -30,6 +30,7 @@ describe('Phase 0B fault-injection catalog', () => {
       'non-deterministic-direction',
       'instrument-leakage',
       'operation-timeout',
+      'operation-failure',
       'empty-result',
       'excluded-propagation',
       'excluded-reason-missing',

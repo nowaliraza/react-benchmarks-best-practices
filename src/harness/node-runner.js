@@ -202,7 +202,8 @@ export async function executeLab({ mode = 'fast', chapter = null, runId = timest
           const scenario = selectedRegistry.find(({ id }) => id === item.scenarioId);
           const variant = scenario.variants.find(({ id }) => id === item.variantId);
           const id = `${item.processIndex}:${item.rotationIndex}:${item.iteration}:${item.scenarioId}:${item.variantId}:${item.pass}`;
-          process.stdout.write(`[${index + 1}/${processItems.length}] ${id}\n`);
+          const progress = index === 0 || (index + 1) % 10 === 0 || index === processItems.length - 1;
+          if (progress) process.stdout.write(`[process ${processIndex + 1}/${budget.processes}] ${index + 1}/${processItems.length} ${item.scenarioId}/${item.variantId}/${item.pass}\n`);
           try {
             const row = await runBrowserOperation(browser, item, scenario, variant);
             observations.push(row);

@@ -19,3 +19,5 @@ The matrix covers:
 The focus and selection gate is exercised with a real focused uncontrolled input retained through the `useCallback` tracer’s parent update. This was added after Phase 0A data was viewed and is therefore recorded in `AMENDMENTS.md`.
 
 CI runs verification rather than publication measurements. Publication remains a clean-tree, explicitly invoked local workflow.
+
+Verification uses one exact repetition per cell because its purpose is deterministic gate coverage. Fast development keeps two repetitions, while publication semantic runs use five.

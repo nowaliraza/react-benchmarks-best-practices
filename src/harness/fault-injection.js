@@ -82,6 +82,12 @@ export const FAULT_CASES = Object.freeze([
     },
   },
   {
+    id: 'operation-failure', expectedCode: 'operation-failed', mutate: (artifact) => {
+      artifact.operations[0].status = 'failed';
+      artifact.operations[0].message = 'Planted measured-realm runtime error';
+    },
+  },
+  {
     id: 'empty-result', expectedCode: 'empty-result', mutate: (artifact) => {
       artifact.observations = [];
       artifact.operations = [];

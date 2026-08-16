@@ -103,6 +103,14 @@ function detectDeclaredDifferences(scenarioId, variantId, observations) {
     const timing = observations.find((row) => row.pass === 'responsiveness')?.observed.responsiveness;
     if (timing?.responsive_max_gap_ms >= 50) labels.push('responsive timing');
   }
+  if (scenarioId === 'state-update-queue' && variantId === 'functional-updaters') {
+    const count = observations.find((row) => row.pass === 'behavior-log')?.observed.behavior.state.count;
+    if (count !== 1) labels.push('final count');
+  }
+  if (scenarioId === 'same-value-updates' && variantId.startsWith('real-')) {
+    const count = observations.find((row) => row.pass === 'behavior-log')?.observed.behavior.state.count;
+    if (count !== 0) labels.push('final count');
+  }
   return labels;
 }
 
@@ -177,20 +185,33 @@ export function validateObservations(registry, observations, operations = []) {
 
     for (const relation of scenario.expectedRelations) {
       if (relation.kind === 'exact') {
-        const rows = observations.filter((item) => item.scenarioId === scenario.id && item.variantId === relation.variant && item.pass === 'exact' && !item.excluded);
+        const behaviorMetric = relation.metric.startsWith('state.');
+        const rows = observations.filter((item) => item.scenarioId === scenario.id && item.variantId === relation.variant && item.pass === (behaviorMetric ? 'behavior-log' : 'exact') && !item.excluded);
         for (const row of rows) {
-          const actual = readMetric(row.observed.exact, relation.metric);
-          if (actual !== undefined && actual !== relation.value) {
+          let actual = behaviorMetric
+            ? readMetric(row.observed.behavior.state, relation.metric.slice('state.'.length))
+            : readMetric(row.observed.exact, relation.metric);
+          if (actual === undefined && relation.metric.startsWith('componentInvocations.')) actual = 0;
+          if (actual !== relation.value) {
             issues.push(issue('exact-relation-failed', `${scenario.id}/${relation.variant} expected ${relation.metric}=${relation.value}; received ${actual}.`, { scenarioId: scenario.id, variantId: relation.variant }));
           }
         }
       }
       if (relation.kind === 'range') {
-        const rows = observations.filter((item) => item.scenarioId === scenario.id && item.variantId === relation.variant && !item.excluded && (relation.metric !== 'intermediateFrames' || item.pass === 'behavior-frame'));
+        const exactMetric = relation.metric.startsWith('componentInvocations.')
+          || ['commits', 'setterCalls', 'mutations.length', 'discardedWorkLowerBound'].includes(relation.metric);
+        const requiredPass = relation.metric === 'intermediateFrames'
+          ? 'behavior-frame'
+          : exactMetric ? 'exact' : null;
+        const rows = observations.filter((item) => item.scenarioId === scenario.id
+          && item.variantId === relation.variant
+          && !item.excluded
+          && (requiredPass === null || item.pass === requiredPass));
         for (const row of rows) {
           let actual;
           if (relation.metric === 'intermediateFrames') actual = row.observed.behavior?.frames.filter(({ state }) => state === 'intermediate').length;
           else actual = readMetric(row.observed.exact ?? row.observed.behavior ?? row.observed.micro ?? row.observed.responsiveness, relation.metric);
+          if (actual === undefined && relation.metric.startsWith('componentInvocations.')) actual = 0;
           if (actual !== undefined && (actual < relation.min || actual > relation.max)) {
             issues.push(issue('range-relation-failed', `${scenario.id}/${relation.variant} ${relation.metric} fell outside [${relation.min}, ${relation.max}].`, { scenarioId: scenario.id, variantId: relation.variant, actual }));
           }

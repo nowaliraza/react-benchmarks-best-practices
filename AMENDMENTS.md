@@ -18,3 +18,14 @@ This append-only ledger records prediction changes made after any relevant measu
 - Relevant data viewed beforehand: yes, local Phase 0A verification and Chapter 2 tracer data.
 - Published finding affected: none; Phase 0A published no React claim.
 - Author: React Reality Lab implementation session.
+
+## Phase 1 same-value idle-boundary amendment — 2026-08-16
+
+- Registry record: `same-value-updates`.
+- Old prediction: real updates commit once per real-value phase; `real-same-idle-same` expected one commit.
+- New prediction: a same-value dispatch after the first commit may add one component invocation and one root commit without a DOM mutation; `real-same-idle-same` expects two commits.
+- Reason: the first preregistered exploratory run on React 19.2.8 consistently observed two invocations and two root commit-hook calls, but only the first commit mutated text.
+- Data viewed beforehand: `artifacts/runs/2026-08-16T07-45-40-381Z`.
+- Published finding affected: none; this amendment predates the Phase 1 publication run.
+- Implementation change: none to the scenario subject.
+- Author: React Reality Lab implementation session.
