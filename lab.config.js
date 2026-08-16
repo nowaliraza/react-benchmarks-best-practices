@@ -7,7 +7,7 @@ export default Object.freeze({
     node: 'v22.12.0',
     chrome: '145.0.7632.159',
   },
-  ports: { preview: 4173 },
+  ports: { preview: 4173, developmentPreview: 4174, profilingPreview: 4175 },
   viewport: { width: 1280, height: 720, deviceScaleFactor: 1 },
   timeoutMs: 5_000,
   budgets: {

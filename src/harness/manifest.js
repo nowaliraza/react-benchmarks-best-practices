@@ -44,6 +44,14 @@ function workloadSizeFor(registry) {
       phase: '3-effects', calibrated: true, memoNearIterations: 0, memoExpensiveIterations: 1_000_000,
     };
   }
+  if (chapters.length === 1 && chapters[0] === 6) {
+    return {
+      phase: '4-builds-observers',
+      calibrated: true,
+      observerItems: 500,
+      responsivenessWorkMs: 10,
+    };
+  }
   return { phase: 'mixed-verification', calibrated: false, chapters };
 }
 
@@ -57,6 +65,8 @@ export async function createManifest({
   browserProcessCount,
   timeoutMs,
   resumeAttempts = [],
+  buildTypes = ['production'],
+  matrixBuild = false,
 }) {
   const packageJson = JSON.parse(await readFile(path.join(projectRoot, 'package.json'), 'utf8'));
   const lock = JSON.parse(await readFile(path.join(projectRoot, 'package-lock.json'), 'utf8'));
@@ -65,18 +75,24 @@ export async function createManifest({
   const amendmentsPath = path.join(projectRoot, 'AMENDMENTS.md');
   const scenarioCount = registry.length;
   const variantCount = registry.reduce((sum, scenario) => sum + scenario.variants.length, 0);
+  const implementationBundleHashes = Object.fromEntries(await Promise.all(buildTypes.map(async (buildType) => [
+    buildType,
+    await hashDirectory(path.join(projectRoot, matrixBuild ? `dist/${buildType}` : 'dist')),
+  ])));
   return {
     reactVersion: resolvedPackage(lock, 'react'),
     reactDomVersion: resolvedPackage(lock, 'react-dom'),
     schedulerVersion: resolvedPackage(lock, 'scheduler'),
     chromeVersion,
     nodeVersion: process.version,
-    buildType: 'production',
+    buildType: matrixBuild ? 'matrix' : 'production',
+    buildTypes,
     protocolVersion: PROTOCOL_VERSION,
     registryHash: await hashFile(registryPath),
     registryCommit: repository.commit,
     implementationCommit: repository.commit,
     implementationBundleHash: await hashDirectory(path.join(projectRoot, 'dist')),
+    implementationBundleHashes,
     amendmentLogHash: await hashFile(amendmentsPath),
     scenarioCount,
     variantCount,

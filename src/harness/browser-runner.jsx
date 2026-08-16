@@ -1,4 +1,4 @@
-import { Profiler, useLayoutEffect, useRef } from 'react';
+import { Profiler, StrictMode, useLayoutEffect, useRef } from 'react';
 import { flushSync } from 'react-dom';
 import { captureBehavior } from './dom.js';
 import { createRecorder } from '../scenarios/instrumentation.js';
@@ -17,8 +17,10 @@ function mutationTarget(node, root) {
   return node.tagName.toLowerCase();
 }
 
-export function createBrowserRunner({ scenarioId, variantId, pass, root }) {
-  const workLogEnabled = pass === 'exact' || pass === 'behavior-log';
+export function createBrowserRunner({ scenarioId, variantId, pass, root, strictMode = 'none', buildType = 'production' }) {
+  const workLogEnabled = pass === 'exact'
+    || pass === 'behavior-log'
+    || (scenarioId === 'work-log-overhead' && variantId === 'work-log-on');
   const recorder = createRecorder(workLogEnabled);
   const apiRef = { current: {} };
   const profilerSamples = [];
@@ -33,18 +35,25 @@ export function createBrowserRunner({ scenarioId, variantId, pass, root }) {
         queueMicrotask(() => window.__LAB_READY_RESOLVE__?.());
       }
     }, []);
-    return <Component variant={variantId} recorder={recorder} apiRef={apiRef} />;
+    const subject = <Component variant={variantId} recorder={recorder} apiRef={apiRef} buildType={buildType} />;
+    return strictMode === 'subtree' ? <StrictMode>{subject}</StrictMode> : subject;
   }
 
-  const element = (
+  const measured = (
     <Profiler id={`${scenarioId}:${variantId}`} onRender={(_id, phase, actualDuration) => {
       profilerSamples.push({ phase, actualDuration, at: performance.now() });
     }}>
       <MeasuredScenario />
     </Profiler>
   );
+  const profilerEnabled = !(scenarioId === 'react-profiler-overhead' && variantId === 'profiler-off');
+  const unprofiled = <MeasuredScenario />;
+  const element = strictMode === 'root'
+    ? <StrictMode>{profilerEnabled ? measured : unprofiled}</StrictMode>
+    : profilerEnabled ? measured : unprofiled;
 
   function reset() {
+    if (apiRef.current.includeMountEvidence === true) return;
     recorder.reset();
     profilerSamples.length = 0;
     window.__REACT_DEVTOOLS_GLOBAL_HOOK__._commits.length = 0;
@@ -122,9 +131,14 @@ export function createBrowserRunner({ scenarioId, variantId, pass, root }) {
 
   async function microTiming() {
     reset();
+    const mutationObserverEnabled = scenarioId === 'mutation-observer-overhead' && variantId === 'mutation-observer-on';
+    const observer = mutationObserverEnabled ? new MutationObserver(() => {}) : null;
+    observer?.observe(root, { subtree: true, childList: true, attributes: true, characterData: true });
     const started = performance.now();
     await apiRef.current.action();
     const scriptEnded = performance.now();
+    observer?.takeRecords();
+    observer?.disconnect();
     await twoFrames();
     const ended = performance.now();
     return {
@@ -147,7 +161,8 @@ export function createBrowserRunner({ scenarioId, variantId, pass, root }) {
     const ticks = [started];
     const longTasks = [];
     const longTaskOffsets = [];
-    const observer = PerformanceObserver.supportedEntryTypes.includes('longtask')
+    const instrumentationEnabled = !(scenarioId === 'responsiveness-instrument-overhead' && variantId === 'instruments-off');
+    const observer = instrumentationEnabled && PerformanceObserver.supportedEntryTypes.includes('longtask')
       ? new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {
             longTasks.push(entry.duration);
@@ -156,11 +171,11 @@ export function createBrowserRunner({ scenarioId, variantId, pass, root }) {
         })
       : null;
     observer?.observe({ type: 'longtask', buffered: true });
-    const timer = setInterval(() => ticks.push(performance.now()), 1);
+    const timer = instrumentationEnabled ? setInterval(() => ticks.push(performance.now()), 1) : null;
     await oneTask();
     await apiRef.current.action();
     await new Promise((resolve) => setTimeout(resolve, 120));
-    clearInterval(timer);
+    if (timer !== null) clearInterval(timer);
     observer?.disconnect();
     const ended = performance.now();
     ticks.push(ended);
@@ -191,13 +206,21 @@ export function createBrowserRunner({ scenarioId, variantId, pass, root }) {
       if (!runners[pass]) throw new Error(`Unsupported pass: ${pass}`);
       return runners[pass]();
     },
-    instruments: {
+    instruments: (() => {
+      const defaults = {
       exact: ['component-bodies', 'setter-wrappers', 'effects', 'refs', 'MutationObserver', 'Profiler', 'commit-hook'],
       'behavior-log': ['component-bodies', 'effects', 'refs'],
       'behavior-frame': ['requestAnimationFrame'],
       'micro-timing': ['performance.now', 'Profiler', 'requestAnimationFrame'],
       responsiveness: ['1ms-tick-sampler', 'PerformanceObserver:longtask', 'performance.now'],
-    }[pass],
+      }[pass];
+      let instruments = [...defaults];
+      if (!profilerEnabled) instruments = instruments.filter((name) => name !== 'Profiler');
+      if (scenarioId === 'work-log-overhead' && variantId === 'work-log-on' && pass === 'micro-timing') instruments.push('component-bodies');
+      if (scenarioId === 'mutation-observer-overhead' && variantId === 'mutation-observer-on' && pass === 'micro-timing') instruments.push('MutationObserver');
+      if (scenarioId === 'responsiveness-instrument-overhead' && variantId === 'instruments-off' && pass === 'responsiveness') instruments = ['performance.now'];
+      return instruments;
+    })(),
   };
 }
 

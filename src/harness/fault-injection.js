@@ -84,6 +84,16 @@ export const FAULT_CASES = Object.freeze([
     },
   },
   {
+    id: 'build-vector-mismatch', expectedCode: 'build-vector-mismatch', mutate: (artifact) => {
+      findObservation(artifact, 'build-mode-semantics', 'production', 'exact').buildType = 'development';
+    },
+  },
+  {
+    id: 'observer-configuration', expectedCode: 'observer-configuration', mutate: (artifact) => {
+      findObservation(artifact, 'work-log-overhead', 'work-log-off', 'micro-timing').instruments.push('component-bodies');
+    },
+  },
+  {
     id: 'non-deterministic-direction', expectedCode: 'non-deterministic-direction', mutate: (artifact) => {
       for (const row of artifact.observations.filter((candidate) => candidate.scenarioId === 'micro-calibration' && candidate.variantId === 'heavy' && candidate.pass === 'micro-timing')) {
         row.observed.micro.micro_total_ms = 0;

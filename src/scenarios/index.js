@@ -33,6 +33,14 @@ import {
   RefCommitTiming,
   UseMemoCrossover,
 } from './effects.jsx';
+import {
+  BuildModeSemantics,
+  MutationObserverOverhead,
+  ProfilingBuildProfiler,
+  ReactProfilerOverhead,
+  ResponsivenessInstrumentOverhead,
+  WorkLogOverhead,
+} from './builds.jsx';
 
 export const scenarios = {
   'use-callback-semantics': UseCallbackScenario,
@@ -62,6 +70,12 @@ export const scenarios = {
   'ref-commit-timing': RefCommitTiming,
   'identity-effect-churn': IdentityEffectChurn,
   'identity-ref-churn': IdentityRefChurn,
+  'build-mode-semantics': BuildModeSemantics,
+  'profiling-build-profiler': ProfilingBuildProfiler,
+  'react-profiler-overhead': ReactProfilerOverhead,
+  'work-log-overhead': WorkLogOverhead,
+  'mutation-observer-overhead': MutationObserverOverhead,
+  'responsiveness-instrument-overhead': ResponsivenessInstrumentOverhead,
 };
 
 export { scheduleExternalMutation } from './external-mutation.js';

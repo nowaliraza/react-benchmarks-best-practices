@@ -30,6 +30,8 @@ describe('Phase 0B fault-injection catalog', () => {
       'external-mutation-order',
       'effect-lifecycle-order',
       'ref-timing-order',
+      'build-vector-mismatch',
+      'observer-configuration',
       'non-deterministic-direction',
       'instrument-leakage',
       'operation-timeout',

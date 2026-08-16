@@ -38,6 +38,8 @@ export const registryRecordSchema = z.object({
   }),
   variants: z.array(z.object({
     id: z.string().regex(/^[a-z0-9-]+$/),
+    buildType: z.enum(['production', 'development', 'profiling']).optional(),
+    strictMode: z.enum(['none', 'root', 'subtree']).optional(),
     excluded: z.boolean().optional(),
     expectedGateFailure: z.boolean().optional(),
     exclusionReason: reasonSchema.optional(),
@@ -93,6 +95,8 @@ export const observationSchema = z.object({
   scenarioId: z.string(),
   variantId: z.string(),
   pass: z.enum(PASS_FAMILIES),
+  buildType: z.enum(['production', 'development', 'profiling']).optional(),
+  strictMode: z.enum(['none', 'root', 'subtree']).optional(),
   processIndex: z.number().int().nonnegative(),
   attemptIndex: z.number().int().nonnegative().optional(),
   rotationIndex: z.number().int().nonnegative(),

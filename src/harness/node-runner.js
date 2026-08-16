@@ -13,7 +13,13 @@ import { buildVerdicts } from './verdicts.js';
 import { hashFile } from './hash.js';
 import { resultSchema } from '../protocol/schema.js';
 
-const previewUrl = `http://127.0.0.1:${config.ports.preview}`;
+const previewPorts = {
+  production: config.ports.preview,
+  development: config.ports.developmentPreview,
+  profiling: config.ports.profilingPreview,
+};
+
+const previewUrl = (buildType) => `http://127.0.0.1:${previewPorts[buildType]}`;
 
 function timestampId() {
   return new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-');
@@ -45,11 +51,15 @@ export async function waitForPreview(url, timeoutMs = 15_000) {
   throw error;
 }
 
-function startPreview() {
+function startPreview(buildType, matrixBuild) {
   const child = spawn(
     process.execPath,
-    [path.join(projectRoot, 'node_modules/vite/bin/vite.js'), 'preview', '--host', '127.0.0.1', '--port', String(config.ports.preview), '--strictPort'],
-    { cwd: projectRoot, stdio: ['ignore', 'pipe', 'pipe'] },
+    [path.join(projectRoot, 'node_modules/vite/bin/vite.js'), 'preview', '--host', '127.0.0.1', '--port', String(previewPorts[buildType]), '--strictPort'],
+    {
+      cwd: projectRoot,
+      stdio: ['ignore', 'pipe', 'pipe'],
+      env: matrixBuild ? { ...process.env, LAB_BUILD_TYPE: buildType } : process.env,
+    },
   );
   let diagnostics = '';
   child.stdout.on('data', (chunk) => { diagnostics += chunk; });
@@ -58,6 +68,29 @@ function startPreview() {
   // diagnostics instead of racing the final stderr chunk.
   const exited = new Promise((resolve) => child.once('close', (code, signal) => resolve({ code, signal })));
   return { child, diagnostics: () => diagnostics, exited };
+}
+
+function requiredBuildTypes(registry) {
+  return [...new Set(registry.flatMap((scenario) => scenario.variants.map((variant) => variant.buildType ?? 'production')))];
+}
+
+async function buildBundles(buildTypes) {
+  const matrixBuild = buildTypes.length > 1 || buildTypes[0] !== 'production';
+  if (!matrixBuild) {
+    await runCommand('npm', ['run', 'build']);
+    return { matrixBuild, buildTypes };
+  }
+  const vite = path.join(projectRoot, 'node_modules/vite/bin/vite.js');
+  for (const buildType of buildTypes) {
+    await runCommand(process.execPath, [vite, 'build'], {
+      env: {
+        ...process.env,
+        LAB_BUILD_TYPE: buildType,
+        NODE_ENV: buildType === 'development' ? 'development' : 'production',
+      },
+    });
+  }
+  return { matrixBuild, buildTypes };
 }
 
 async function stopPreview(child, exited) {
@@ -95,9 +128,12 @@ function buildSchedule(registry, budget) {
         for (let rotationIndex = 0; rotationIndex < rotations.length; rotationIndex += 1) {
           for (let orderIndex = 0; orderIndex < rotations[rotationIndex].length; orderIndex += 1) {
             for (let iteration = 0; iteration < plan.iterations; iteration += 1) {
+              const variant = scenario.variants.find(({ id }) => id === rotations[rotationIndex][orderIndex]);
               schedule.push({
                 scenarioId: scenario.id,
-                variantId: rotations[rotationIndex][orderIndex],
+                variantId: variant.id,
+                buildType: variant.buildType ?? 'production',
+                strictMode: variant.strictMode ?? 'none',
                 pass: plan.pass,
                 processIndex,
                 rotationIndex,
@@ -114,7 +150,7 @@ function buildSchedule(registry, budget) {
 }
 
 export function scheduleKey(item) {
-  return `${item.scenarioId}\0${item.variantId}\0${item.pass}\0${item.rotationIndex}\0${item.iteration}\0${item.orderIndex}`;
+  return `${item.scenarioId}\0${item.variantId}\0${item.buildType ?? 'production'}\0${item.strictMode ?? 'none'}\0${item.pass}\0${item.rotationIndex}\0${item.iteration}\0${item.orderIndex}`;
 }
 
 export function completeAttemptRows(rows, processItems) {
@@ -146,10 +182,11 @@ async function runBrowserOperation(page, item, scenario, variant) {
       observed: {},
     };
   }
-  const url = new URL(previewUrl);
+  const url = new URL(previewUrl(item.buildType));
   url.searchParams.set('scenario', item.scenarioId);
   url.searchParams.set('variant', item.variantId);
   url.searchParams.set('pass', item.pass);
+  url.searchParams.set('strict', item.strictMode);
   const operation = await runOperation({
     label: `${item.scenarioId}/${item.variantId}/${item.pass}`,
     timeoutMs: config.timeoutMs,
@@ -184,7 +221,7 @@ export async function executeLab({ mode = 'fast', chapter = null, runId = timest
     }
   }
 
-  await runCommand('npm', ['run', 'build']);
+  const buildMatrix = await buildBundles(requiredBuildTypes(selectedRegistry));
   const effectiveRunId = resumeRunId ?? runId;
   const runDirectory = path.join(projectRoot, 'artifacts/runs', effectiveRunId);
   await mkdir(runDirectory, { recursive: true });
@@ -196,7 +233,7 @@ export async function executeLab({ mode = 'fast', chapter = null, runId = timest
   const rawOperations = resumeRunId
     ? await readJsonLines(operationsFile).catch(() => [])
     : [];
-  const { child: preview, diagnostics, exited } = startPreview();
+  const previews = buildMatrix.buildTypes.map((buildType) => ({ buildType, ...startPreview(buildType, buildMatrix.matrixBuild) }));
   let observations = [];
   let operations = [];
   let chromeVersion = resumeRunId
@@ -207,14 +244,14 @@ export async function executeLab({ mode = 'fast', chapter = null, runId = timest
   const attempts = [];
 
   try {
-    await Promise.race([
-      waitForPreview(previewUrl),
+    await Promise.all(previews.map(({ buildType, diagnostics, exited }) => Promise.race([
+      waitForPreview(previewUrl(buildType)),
       exited.then(({ code, signal }) => {
-        const error = new Error(`Preview server exited before readiness (code=${code}, signal=${signal}).\n${diagnostics()}`);
+        const error = new Error(`${buildType} preview server exited before readiness (code=${code}, signal=${signal}).\n${diagnostics()}`);
         error.code = 'preview-server-failure';
         throw error;
       }),
-    ]);
+    ])));
     const schedule = buildSchedule(selectedRegistry, budget);
     for (let processIndex = 0; processIndex < budget.processes; processIndex += 1) {
       const processItems = schedule.filter((item) => item.processIndex === processIndex);
@@ -276,10 +313,10 @@ export async function executeLab({ mode = 'fast', chapter = null, runId = timest
       }
     }
   } catch (error) {
-    error.message += `\nPreview diagnostics:\n${diagnostics()}`;
+    error.message += `\nPreview diagnostics:\n${previews.map(({ buildType, diagnostics }) => `${buildType}:\n${diagnostics()}`).join('\n')}`;
     throw error;
   } finally {
-    await stopPreview(preview, exited);
+    await Promise.all(previews.map(({ child, exited }) => stopPreview(child, exited)));
   }
 
   const schedule = buildSchedule(selectedRegistry, budget);
@@ -313,7 +350,10 @@ export async function executeLab({ mode = 'fast', chapter = null, runId = timest
         .filter((variantId, index, array) => index === 0 || variantId !== array[index - 1]),
     }];
   })).values()];
-  const enabledInstruments = Object.fromEntries([...new Set(observations.map(({ pass }) => pass))].map((pass) => [pass, instrumentsFor(pass)]));
+  const enabledInstruments = Object.fromEntries([...new Set(observations.map(({ pass }) => pass))].map((pass) => [
+    pass,
+    [...new Set(observations.filter((row) => row.pass === pass).flatMap((row) => row.instruments))],
+  ]));
   const manifest = await createManifest({
     mode,
     chromeVersion,
@@ -324,6 +364,8 @@ export async function executeLab({ mode = 'fast', chapter = null, runId = timest
     browserProcessCount: new Set(rawOperations.map(({ processIndex, attemptIndex = 0 }) => `${processIndex}:${attemptIndex}`)).size,
     timeoutMs: config.timeoutMs,
     resumeAttempts: attempts,
+    buildTypes: buildMatrix.buildTypes,
+    matrixBuild: buildMatrix.matrixBuild,
   });
   const expected = {
     ...config.expectedVersions,

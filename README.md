@@ -2,7 +2,7 @@
 
 React Reality Lab turns React advice into preregistered, reproducible evidence. It separates component invocation, React commits, DOM mutation, browser presentation, synchronous cost, and main-thread responsiveness instead of treating “rendering” as one event.
 
-This repository implements **Phase 0A: the trusted kernel and tracer bullet**, **Phase 0B: prove the gate bites**, and published **Phase 1 foundations**, **Phase 2 concurrency**, and **Phase 3 Effects and boundaries** releases. Published artifacts are tied to their exact manifests, implementation commits, and registry amendment history.
+This repository implements **Phase 0A: the trusted kernel and tracer bullet**, **Phase 0B: prove the gate bites**, published **Phase 1 foundations**, **Phase 2 concurrency**, and **Phase 3 Effects and boundaries** releases, plus the preregistered **Phase 4 build and observer matrix**. Published artifacts are tied to their exact manifests, implementation commits, and registry amendment history.
 
 ## Requirements
 
@@ -36,4 +36,4 @@ The measured page owns exactly one React root. The runner, persistence layer, an
 
 The preregistration is [src/registry.js](src/registry.js). Scenario implementations are under [src/scenarios](src/scenarios). Only the registry file contributes to the registry hash. Prediction changes after measurement belong in [AMENDMENTS.md](AMENDMENTS.md), and retractions remain in [RETRACTIONS.md](RETRACTIONS.md).
 
-See [METHODOLOGY.md](METHODOLOGY.md) for evidence boundaries, pass isolation, controls, and publication policy. Implemented milestones are documented in [docs/phase-0a.md](docs/phase-0a.md), [docs/phase-0b.md](docs/phase-0b.md), [docs/phase-1.md](docs/phase-1.md), [docs/phase-2.md](docs/phase-2.md), and [docs/phase-3.md](docs/phase-3.md).
+See [METHODOLOGY.md](METHODOLOGY.md) for evidence boundaries, pass isolation, controls, and publication policy. Implemented milestones are documented under [docs](docs), including [Phase 4](docs/phase-4.md).

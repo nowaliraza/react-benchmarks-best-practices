@@ -5,6 +5,7 @@ const params = new URLSearchParams(location.search);
 const scenarioId = params.get('scenario');
 const variantId = params.get('variant');
 const pass = params.get('pass');
+const strictMode = params.get('strict') ?? 'none';
 const rootElement = document.querySelector('#measured-root');
 const runtimeErrors = [];
 const onError = (event) => runtimeErrors.push(event.error?.stack ?? event.message ?? 'Unknown window error');
@@ -13,7 +14,14 @@ window.addEventListener('error', onError);
 window.addEventListener('unhandledrejection', onUnhandledRejection);
 
 const ready = new Promise((resolve) => { window.__LAB_READY_RESOLVE__ = resolve; });
-const runner = createBrowserRunner({ scenarioId, variantId, pass, root: rootElement });
+const runner = createBrowserRunner({
+  scenarioId,
+  variantId,
+  pass,
+  root: rootElement,
+  strictMode,
+  buildType: __LAB_BUILD_TYPE__,
+});
 const root = createRoot(rootElement);
 root.render(runner.element);
 

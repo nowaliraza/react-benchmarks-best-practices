@@ -4,7 +4,7 @@ import { PROTOCOL_VERSION } from '../protocol/constants.js';
 const REQUIRED_MANIFEST_FIELDS = [
   'reactVersion', 'reactDomVersion', 'schedulerVersion', 'chromeVersion', 'nodeVersion',
   'buildType', 'protocolVersion', 'registryHash', 'registryCommit', 'implementationCommit',
-  'implementationBundleHash', 'amendmentLogHash', 'scenarioCount', 'variantCount',
+  'buildTypes', 'implementationBundleHash', 'implementationBundleHashes', 'amendmentLogHash', 'scenarioCount', 'variantCount',
   'executionOrders', 'evidenceProfile', 'enabledInstruments', 'samplingBudgets',
   'browserProcessCount', 'cpu', 'viewport', 'workloadSize', 'timeouts', 'timestamp',
   'workingTreeClean',
@@ -174,6 +174,24 @@ function detectDeclaredDifferences(scenarioId, variantId, observations) {
     const lifecycle = observations.find((row) => row.pass === 'behavior-log')?.observed.behavior.lifecycle ?? [];
     if (lifecycle.some(({ event }) => event === 'effect-setup')) labels.push('effect lifecycle');
   }
+  if (scenarioId === 'build-mode-semantics' && variantId === 'strict-root') {
+    const exact = observations.find((row) => row.pass === 'exact')?.observed.exact;
+    if (exact?.componentInvocations.BuildModeSubject === 2 && exact.effectCleanups === 1) labels.push('strict render and effect replay');
+  }
+  if (scenarioId === 'build-mode-semantics' && variantId === 'strict-subtree') {
+    const exact = observations.find((row) => row.pass === 'exact')?.observed.exact;
+    if (exact?.componentInvocations.BuildModeSubject === 2 && exact.effectCleanups === 0) labels.push('strict render replay');
+  }
+  const instrumentDifferences = [
+    ['react-profiler-overhead', 'profiler-on', 'Profiler', 'Profiler instrument'],
+    ['work-log-overhead', 'work-log-on', 'component-bodies', 'work-log instrument'],
+    ['mutation-observer-overhead', 'mutation-observer-on', 'MutationObserver', 'MutationObserver instrument'],
+    ['responsiveness-instrument-overhead', 'instruments-on', '1ms-tick-sampler', 'responsiveness instruments'],
+  ];
+  for (const [instrumentScenario, instrumentVariant, instrument, label] of instrumentDifferences) {
+    if (scenarioId === instrumentScenario && variantId === instrumentVariant
+      && observations.some((row) => row.instruments.includes(instrument))) labels.push(label);
+  }
   return labels;
 }
 
@@ -209,6 +227,13 @@ export function validateObservations(registry, observations, operations = []) {
     for (const variant of scenario.variants) {
       const rows = observations.filter((row) => row.scenarioId === scenario.id && row.variantId === variant.id);
       const shouldExclude = scenario.status === 'excluded' || variant.excluded === true;
+      if (rows.some((row) => row.buildType !== (variant.buildType ?? 'production')
+        || row.strictMode !== (variant.strictMode ?? 'none'))) {
+        issues.push(issue('build-vector-mismatch', `Build or Strict Mode vector was not preserved for ${scenario.id}/${variant.id}.`, {
+          scenarioId: scenario.id,
+          variantId: variant.id,
+        }));
+      }
       if (rows.some((row) => row.excluded !== shouldExclude)) {
         issues.push(issue('excluded-propagation', `Excluded state was not preserved for ${scenario.id}/${variant.id}.`));
       }
@@ -429,6 +454,40 @@ export function validateInstrumentIsolation(observations) {
   return issues;
 }
 
+export function validateBuildAndObserverVectors(manifest, observations) {
+  const issues = [];
+  const actualBuildTypes = [...new Set(observations.map(({ buildType }) => buildType).filter(Boolean))].sort();
+  const manifestBuildTypes = [...(manifest.buildTypes ?? [])].sort();
+  if (stable(actualBuildTypes) !== stable(manifestBuildTypes)) {
+    issues.push(issue('build-vector-mismatch', 'Manifest build types do not match observation build vectors.', {
+      expected: manifestBuildTypes,
+      actual: actualBuildTypes,
+    }));
+  }
+  for (const buildType of manifestBuildTypes) {
+    if (!manifest.implementationBundleHashes?.[buildType]) {
+      issues.push(issue('missing-bundle-hash', `Missing bundle hash for ${buildType}.`, { buildType }));
+    }
+  }
+  const configurations = [
+    ['react-profiler-overhead', 'micro-timing', 'profiler-off', 'profiler-on', 'Profiler'],
+    ['work-log-overhead', 'micro-timing', 'work-log-off', 'work-log-on', 'component-bodies'],
+    ['mutation-observer-overhead', 'micro-timing', 'mutation-observer-off', 'mutation-observer-on', 'MutationObserver'],
+    ['responsiveness-instrument-overhead', 'responsiveness', 'instruments-off', 'instruments-on', '1ms-tick-sampler'],
+  ];
+  for (const [scenarioId, pass, offVariant, onVariant, instrument] of configurations) {
+    const rows = observations.filter((row) => row.scenarioId === scenarioId && row.pass === pass);
+    if (rows.length === 0) continue;
+    const invalid = rows.some((row) => row.variantId === offVariant
+      ? row.instruments.includes(instrument)
+      : row.variantId === onVariant && !row.instruments.includes(instrument));
+    if (invalid) {
+      issues.push(issue('observer-configuration', `${scenarioId} did not preserve its on/off ${instrument} configuration.`, { scenarioId }));
+    }
+  }
+  return issues;
+}
+
 export function validateRun({ registry, manifest, observations, operations, expected, publication = false }) {
   const registryResult = registrySchema.safeParse(registry);
   const registryIssues = registryResult.success ? [] : [issue('registry-schema', 'Registry failed schema validation.', { errors: registryResult.error.issues })];
@@ -439,6 +498,7 @@ export function validateRun({ registry, manifest, observations, operations, expe
       ...validateManifest(manifest, expected, { publication }),
       ...observationResult.issues,
       ...validateInstrumentIsolation(observations),
+      ...validateBuildAndObserverVectors(manifest, observations),
       ...validateSampleCompleteness(registry, observations, manifest),
     ],
     expectedRejections: observationResult.expectedRejections,

@@ -3,6 +3,7 @@ import config from '../lab.config.js';
 import {
   intermediateFrameCount,
   validateBehaviorControl,
+  validateBuildAndObserverVectors,
   validateExternalMutationOrdering,
   validateInstrumentIsolation,
   validateLifecycleOrder,
@@ -18,11 +19,13 @@ const baseManifest = {
   chromeVersion: config.expectedVersions.chrome,
   nodeVersion: config.expectedVersions.node,
   buildType: 'production',
+  buildTypes: ['production'],
   protocolVersion: config.protocolVersion,
   registryHash: 'registry',
   registryCommit: 'abc',
   implementationCommit: 'abc',
   implementationBundleHash: 'bundle',
+  implementationBundleHashes: { production: 'bundle' },
   amendmentLogHash: 'amendments',
   scenarioCount: 1,
   variantCount: 1,
@@ -135,5 +138,18 @@ describe('effect and ref ordering gates', () => {
     const lifecycle = [{ event: 'effect-cleanup', at: 1 }, { event: 'effect-setup', at: 2 }];
     expect(validateLifecycleOrder(lifecycle, 'effect-cleanup', 'effect-setup', 'effect-order')).toEqual([]);
     expect(validateLifecycleOrder(lifecycle.toReversed(), 'effect-cleanup', 'effect-setup', 'effect-order')[0].code).toBe('effect-order');
+  });
+});
+
+describe('build and observer vectors', () => {
+  it('rejects a manifest/row build mismatch and an instrument in the off cell', () => {
+    const observations = [{
+      scenarioId: 'work-log-overhead', variantId: 'work-log-off', pass: 'micro-timing',
+      buildType: 'development', instruments: ['component-bodies'],
+    }];
+    const codes = validateBuildAndObserverVectors({
+      buildTypes: ['production'], implementationBundleHashes: { production: 'hash' },
+    }, observations).map(({ code }) => code);
+    expect(codes).toEqual(expect.arrayContaining(['build-vector-mismatch', 'observer-configuration']));
   });
 });
