@@ -18,12 +18,14 @@ Install with `npm ci`. Dependencies are exact-pinned in `package.json` and resol
 npm run verify
 npm run fast
 npm run measure -- --chapter 1
+npm run measure -- --chapter 1 --resume <run-id>
 npm run results:merge
 ```
 
 - `verify` runs schema tests, the browser-backed calibration slice, and a fault-injection matrix that plants every Phase 0B publication defect into the resulting artifact. Target: under two minutes.
 - `fast` uses one browser process and reduced samples. Its results are permanently non-publishable.
 - `measure` uses publication budgets, requires a clean committed tree, and runs one selected chapter.
+- `--resume` reuses complete logical process attempts and reruns an interrupted process as a new physical-browser attempt. Partial JSONL is retained but excluded from verified summaries.
 - `results:merge` merges only complete, gate-clean runs with compatible manifests.
 
 Raw observations and operation journals are written incrementally under `artifacts/runs/<run-id>/`. A timeout or crash therefore leaves an auditable partial run. This directory is ignored by Git; published datasets should be deliberately copied into a versioned release location in a later release phase.

@@ -7,7 +7,8 @@ function valueAfter(flag) {
 
 const mode = valueAfter('--mode') ?? 'fast';
 const chapter = valueAfter('--chapter');
-const { result, runDirectory } = await executeLab({ mode, chapter });
+const resumeRunId = valueAfter('--resume');
+const { result, runDirectory } = await executeLab({ mode, chapter, resumeRunId });
 
 console.log(`Run saved to ${runDirectory}`);
 console.log(`Observations: ${result.observations.length}`);

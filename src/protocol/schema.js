@@ -94,6 +94,7 @@ export const observationSchema = z.object({
   variantId: z.string(),
   pass: z.enum(PASS_FAMILIES),
   processIndex: z.number().int().nonnegative(),
+  attemptIndex: z.number().int().nonnegative().optional(),
   rotationIndex: z.number().int().nonnegative(),
   iteration: z.number().int().nonnegative(),
   orderIndex: z.number().int().nonnegative(),

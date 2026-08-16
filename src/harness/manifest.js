@@ -40,6 +40,7 @@ export async function createManifest({
   samplingBudgets,
   browserProcessCount,
   timeoutMs,
+  resumeAttempts = [],
 }) {
   const packageJson = JSON.parse(await readFile(path.join(projectRoot, 'package.json'), 'utf8'));
   const lock = JSON.parse(await readFile(path.join(projectRoot, 'package-lock.json'), 'utf8'));
@@ -68,6 +69,7 @@ export async function createManifest({
     enabledInstruments,
     samplingBudgets,
     browserProcessCount,
+    resumeAttempts,
     cpu: cpus().map(({ model, speed }) => ({ model, speedMHz: speed })),
     viewport: { width: 1280, height: 720, deviceScaleFactor: 1 },
     workloadSize: { phase: '0A', calibrated: false },

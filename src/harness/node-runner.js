@@ -113,6 +113,16 @@ function buildSchedule(registry, budget) {
   return schedule;
 }
 
+export function scheduleKey(item) {
+  return `${item.scenarioId}\0${item.variantId}\0${item.pass}\0${item.rotationIndex}\0${item.iteration}\0${item.orderIndex}`;
+}
+
+export function completeAttemptRows(rows, processItems) {
+  if (rows.length !== processItems.length) return false;
+  const expected = new Set(processItems.map(scheduleKey));
+  return rows.every((row) => expected.delete(scheduleKey(row))) && expected.size === 0;
+}
+
 async function appendJsonLine(file, value) {
   await appendFile(file, `${JSON.stringify(value)}\n`);
 }
@@ -156,7 +166,7 @@ async function runBrowserOperation(browser, item, scenario, variant) {
   };
 }
 
-export async function executeLab({ mode = 'fast', chapter = null, runId = timestampId() } = {}) {
+export async function executeLab({ mode = 'fast', chapter = null, runId = timestampId(), resumeRunId = null } = {}) {
   const budget = config.budgets[mode];
   if (!budget) throw new Error(`Unknown execution mode: ${mode}`);
   const selectedRegistry = chapter === null ? fullRegistry : fullRegistry.filter((scenario) => scenario.chapter === Number(chapter));
@@ -169,14 +179,26 @@ export async function executeLab({ mode = 'fast', chapter = null, runId = timest
   }
 
   await runCommand('npm', ['run', 'build']);
-  const runDirectory = path.join(projectRoot, 'artifacts/runs', runId);
+  const effectiveRunId = resumeRunId ?? runId;
+  const runDirectory = path.join(projectRoot, 'artifacts/runs', effectiveRunId);
   await mkdir(runDirectory, { recursive: true });
   const observationsFile = path.join(runDirectory, 'observations.jsonl');
   const operationsFile = path.join(runDirectory, 'operations.jsonl');
+  const rawObservations = resumeRunId
+    ? await readJsonLines(observationsFile).catch(() => [])
+    : [];
+  const rawOperations = resumeRunId
+    ? await readJsonLines(operationsFile).catch(() => [])
+    : [];
   const { child: preview, diagnostics, exited } = startPreview();
-  const observations = [];
-  const operations = [];
-  let chromeVersion = null;
+  let observations = [];
+  let operations = [];
+  let chromeVersion = resumeRunId
+    ? await readFile(path.join(runDirectory, 'manifest.json'), 'utf8')
+      .then((contents) => JSON.parse(contents).chromeVersion)
+      .catch(() => null)
+    : null;
+  const attempts = [];
 
   try {
     await Promise.race([
@@ -189,6 +211,25 @@ export async function executeLab({ mode = 'fast', chapter = null, runId = timest
     ]);
     const schedule = buildSchedule(selectedRegistry, budget);
     for (let processIndex = 0; processIndex < budget.processes; processIndex += 1) {
+      const processItems = schedule.filter((item) => item.processIndex === processIndex);
+      const previousAttemptIndexes = rawObservations
+        .filter((row) => row.processIndex === processIndex)
+        .map((row) => row.attemptIndex ?? 0);
+      const completePreviousAttempt = [...new Set(previousAttemptIndexes)]
+        .sort((left, right) => right - left)
+        .find((attemptIndex) => completeAttemptRows(
+          rawObservations.filter((row) => row.processIndex === processIndex && (row.attemptIndex ?? 0) === attemptIndex),
+          processItems,
+        ));
+      if (completePreviousAttempt !== undefined) {
+        attempts.push({ processIndex, attemptIndex: completePreviousAttempt, resumed: true, reusedCompleteAttempt: true });
+        continue;
+      }
+      const previousOperationAttempts = rawOperations
+        .filter((operation) => operation.processIndex === processIndex)
+        .map((operation) => operation.attemptIndex ?? 0);
+      const attemptIndex = Math.max(-1, ...previousAttemptIndexes, ...previousOperationAttempts) + 1;
+      attempts.push({ processIndex, attemptIndex, resumed: resumeRunId !== null, reusedCompleteAttempt: false });
       const browser = await chromium.launch({
         executablePath: '/usr/bin/google-chrome',
         headless: true,
@@ -196,28 +237,29 @@ export async function executeLab({ mode = 'fast', chapter = null, runId = timest
       });
       chromeVersion = browser.version();
       try {
-        const processItems = schedule.filter((item) => item.processIndex === processIndex);
         for (let index = 0; index < processItems.length; index += 1) {
-          const item = processItems[index];
+          const item = { ...processItems[index], attemptIndex };
           const scenario = selectedRegistry.find(({ id }) => id === item.scenarioId);
           const variant = scenario.variants.find(({ id }) => id === item.variantId);
-          const id = `${item.processIndex}:${item.rotationIndex}:${item.iteration}:${item.scenarioId}:${item.variantId}:${item.pass}`;
+          const id = `${item.processIndex}:${attemptIndex}:${item.rotationIndex}:${item.iteration}:${item.scenarioId}:${item.variantId}:${item.pass}`;
           const progress = index === 0 || (index + 1) % 10 === 0 || index === processItems.length - 1;
           if (progress) process.stdout.write(`[process ${processIndex + 1}/${budget.processes}] ${index + 1}/${processItems.length} ${item.scenarioId}/${item.variantId}/${item.pass}\n`);
           try {
             const row = await runBrowserOperation(browser, item, scenario, variant);
-            observations.push(row);
-            const operation = { id, status: 'completed', durationMs: row.durationMs };
-            operations.push(operation);
+            const operation = { id, processIndex, attemptIndex, status: 'completed', durationMs: row.durationMs };
+            rawObservations.push(row);
+            rawOperations.push(operation);
             await Promise.all([appendJsonLine(observationsFile, row), appendJsonLine(operationsFile, operation)]);
           } catch (error) {
             const operation = {
               id,
+              processIndex,
+              attemptIndex,
               status: error instanceof OperationTimeoutError ? 'timeout' : 'failed',
               code: error.code ?? 'operation-error',
               message: error.message,
             };
-            operations.push(operation);
+            rawOperations.push(operation);
             await appendJsonLine(operationsFile, operation);
           }
         }
@@ -230,6 +272,23 @@ export async function executeLab({ mode = 'fast', chapter = null, runId = timest
     throw error;
   } finally {
     await stopPreview(preview, exited);
+  }
+
+  const schedule = buildSchedule(selectedRegistry, budget);
+  const selectedAttempts = [];
+  for (let processIndex = 0; processIndex < budget.processes; processIndex += 1) {
+    const processItems = schedule.filter((item) => item.processIndex === processIndex);
+    const attemptIndexes = [...new Set(rawObservations
+      .filter((row) => row.processIndex === processIndex)
+      .map((row) => row.attemptIndex ?? 0))].sort((left, right) => right - left);
+    const attemptIndex = attemptIndexes.find((candidate) => completeAttemptRows(
+      rawObservations.filter((row) => row.processIndex === processIndex && (row.attemptIndex ?? 0) === candidate),
+      processItems,
+    ));
+    if (attemptIndex === undefined) continue;
+    selectedAttempts.push({ processIndex, attemptIndex });
+    observations.push(...rawObservations.filter((row) => row.processIndex === processIndex && (row.attemptIndex ?? 0) === attemptIndex));
+    operations.push(...rawOperations.filter((operation) => operation.processIndex === processIndex && (operation.attemptIndex ?? 0) === attemptIndex && operation.status === 'completed'));
   }
 
   const executionOrders = [...new Map(observations.map((row) => {
@@ -254,8 +313,9 @@ export async function executeLab({ mode = 'fast', chapter = null, runId = timest
     executionOrders,
     enabledInstruments,
     samplingBudgets: budget,
-    browserProcessCount: budget.processes,
+    browserProcessCount: new Set(rawOperations.map(({ processIndex, attemptIndex = 0 }) => `${processIndex}:${attemptIndex}`)).size,
     timeoutMs: config.timeoutMs,
+    resumeAttempts: attempts,
   });
   const expected = {
     ...config.expectedVersions,
