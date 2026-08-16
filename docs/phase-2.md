@@ -33,3 +33,9 @@ The discarded-work metric is `max(0, observed item invocations - one complete co
 The external-store mutation is performed by a host timer outside component render. The gate requires the ordered marks `first render chunk → external mutation → last render chunk of the first pass → commit`. The direct-read variant is an expected gate rejection for tearing. The safe variant records consistency at every observed commit as well as in the final tree.
 
 The concurrency predictions use React's public [`startTransition`](https://react.dev/reference/react/startTransition) and [`useSyncExternalStore`](https://react.dev/reference/react/useSyncExternalStore) contracts. They do not infer internal scheduling primitives.
+
+## Publication
+
+The clean Chapter 4 run at `artifacts/runs/2026-08-16T19-13-30-495Z` contains 192 observations, six supported verdicts, zero gate issues, and the required expected tearing rejection. It is tied to implementation commit `688e5b127f10d73ca8d7a6dcdf3100d4fb8940d8` and the corrected `2-concurrency` workload manifest.
+
+The versioned release is in [`datasets/phase-2`](../datasets/phase-2/README.md), with findings in [`reports/phase-2-concurrency.md`](../reports/phase-2-concurrency.md).
