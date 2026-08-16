@@ -1,0 +1,302 @@
+{
+  "reactVersion": "19.2.8",
+  "reactDomVersion": "19.2.8",
+  "schedulerVersion": "0.27.0",
+  "chromeVersion": "145.0.7632.159",
+  "nodeVersion": "v22.12.0",
+  "buildType": "production",
+  "protocolVersion": "0.1.0",
+  "registryHash": "612d11ce31a9e1eb4c733c21124190442a0fab166d284bb10c117bac5701876d",
+  "registryCommit": "0c6c8fd7f15934686a7b683c5b300ccb61a2fcb5",
+  "implementationCommit": "0c6c8fd7f15934686a7b683c5b300ccb61a2fcb5",
+  "implementationBundleHash": "3e5b6f2d04285c568aac97f09e6e3574fcfc3ad246c62bed767a871ca1c382ce",
+  "amendmentLogHash": "7af0843a8617c1ba32408262a26f6bf9360db5b53acc3138b84ba9302ce5bb8e",
+  "scenarioCount": 4,
+  "variantCount": 10,
+  "executionOrders": [
+    {
+      "processIndex": 0,
+      "scenarioId": "use-callback-semantics",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "inline",
+        "callback-with-deps",
+        "callback-functional",
+        "module-stable"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "use-callback-semantics",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "inline",
+        "callback-with-deps",
+        "callback-functional",
+        "module-stable"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "local-versus-lifted-state",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "local",
+        "lifted"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "local-versus-lifted-state",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "local",
+        "lifted"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "memo-prop-identity",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "stable-object",
+        "recreated-object"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "memo-prop-identity",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "stable-object",
+        "recreated-object"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "structural-sharing",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "shared-branch",
+        "recreated-branch"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "structural-sharing",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "shared-branch",
+        "recreated-branch"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "use-callback-semantics",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "inline",
+        "callback-with-deps",
+        "callback-functional",
+        "module-stable"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "use-callback-semantics",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "inline",
+        "callback-with-deps",
+        "callback-functional",
+        "module-stable"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "local-versus-lifted-state",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "local",
+        "lifted"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "local-versus-lifted-state",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "local",
+        "lifted"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "memo-prop-identity",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "stable-object",
+        "recreated-object"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "memo-prop-identity",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "stable-object",
+        "recreated-object"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "structural-sharing",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "shared-branch",
+        "recreated-branch"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "structural-sharing",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "shared-branch",
+        "recreated-branch"
+      ]
+    }
+  ],
+  "evidenceProfile": [
+    "semantic"
+  ],
+  "enabledInstruments": {
+    "exact": [
+      "component-bodies",
+      "setter-wrappers",
+      "effects",
+      "refs",
+      "MutationObserver",
+      "Profiler",
+      "commit-hook"
+    ],
+    "behavior-log": [
+      "component-bodies",
+      "effects",
+      "refs"
+    ]
+  },
+  "samplingBudgets": {
+    "exactIterations": 5,
+    "behaviorIterations": 1,
+    "microIterations": 8,
+    "microRotations": 5,
+    "responsiveIterations": 3,
+    "responsiveRotations": 3,
+    "processes": 2
+  },
+  "browserProcessCount": 2,
+  "resumeAttempts": [
+    {
+      "processIndex": 0,
+      "attemptIndex": 0,
+      "resumed": false,
+      "reusedCompleteAttempt": false
+    },
+    {
+      "processIndex": 1,
+      "attemptIndex": 0,
+      "resumed": false,
+      "reusedCompleteAttempt": false
+    }
+  ],
+  "cpu": [
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 412
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 400
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 650
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1192
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 973
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 831
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 726
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 975
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 822
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1200
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1180
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1146
+    }
+  ],
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "deviceScaleFactor": 1
+  },
+  "workloadSize": {
+    "phase": "0A",
+    "calibrated": false
+  },
+  "timeouts": {
+    "operationMs": 5000,
+    "previewStartupMs": 15000
+  },
+  "timestamp": "2026-08-16T11:57:48.571Z",
+  "workingTreeClean": true,
+  "workingTreeStatus": "",
+  "publishable": true,
+  "mode": "publication",
+  "expectedPins": {
+    "react": "19.2.8",
+    "reactDom": "19.2.8",
+    "scheduler": "0.27.0"
+  }
+}

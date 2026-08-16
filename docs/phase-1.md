@@ -24,3 +24,7 @@ The first Chapter 3 publication attempt also exposed a frame-gate defect: `flush
 These scenarios report public observations: component probes, root commit-hook calls, DOM mutations, semantic final state, live behavior, and presented frames. They do not claim an exact internal bailout location, lane, fiber flag, queue representation, or reconciliation duration.
 
 The runtime trap now converts uncaught measured-realm errors and unhandled promise rejections into failed operations. A broken React subject therefore cannot be interpreted as a zero-work result.
+
+## Publication
+
+The compatible Chapter 1–3 publication runs contain 514 raw observations, zero gate issues, and clean manifests tied to implementation commit `0c6c8fd7f15934686a7b683c5b300ccb61a2fcb5`. The versioned files are in [`datasets/phase-1`](../datasets/phase-1/README.md), and the evidence-level findings are in [`reports/phase-1-foundations.md`](../reports/phase-1-foundations.md).

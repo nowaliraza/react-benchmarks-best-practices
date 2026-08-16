@@ -28,7 +28,7 @@ npm run results:merge
 - `--resume` reuses complete logical process attempts and reruns an interrupted process as a new physical-browser attempt. Partial JSONL is retained but excluded from verified summaries.
 - `results:merge` merges only complete, gate-clean runs with compatible manifests.
 
-Raw observations and operation journals are written incrementally under `artifacts/runs/<run-id>/`. A timeout or crash therefore leaves an auditable partial run. This directory is ignored by Git; published datasets should be deliberately copied into a versioned release location in a later release phase.
+Raw observations and operation journals are written incrementally under `artifacts/runs/<run-id>/`. A timeout or crash therefore leaves an auditable partial run. This directory is ignored by Git. The verified Phase 1 release is versioned under [datasets/phase-1](datasets/phase-1), with its evidence report at [reports/phase-1-foundations.md](reports/phase-1-foundations.md).
 
 ## Boundary
 

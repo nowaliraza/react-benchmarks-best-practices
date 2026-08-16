@@ -1,0 +1,351 @@
+{
+  "reactVersion": "19.2.8",
+  "reactDomVersion": "19.2.8",
+  "schedulerVersion": "0.27.0",
+  "chromeVersion": "145.0.7632.159",
+  "nodeVersion": "v22.12.0",
+  "buildType": "production",
+  "protocolVersion": "0.1.0",
+  "registryHash": "612d11ce31a9e1eb4c733c21124190442a0fab166d284bb10c117bac5701876d",
+  "registryCommit": "0c6c8fd7f15934686a7b683c5b300ccb61a2fcb5",
+  "implementationCommit": "0c6c8fd7f15934686a7b683c5b300ccb61a2fcb5",
+  "implementationBundleHash": "3e5b6f2d04285c568aac97f09e6e3574fcfc3ad246c62bed767a871ca1c382ce",
+  "amendmentLogHash": "7af0843a8617c1ba32408262a26f6bf9360db5b53acc3138b84ba9302ce5bb8e",
+  "scenarioCount": 5,
+  "variantCount": 13,
+  "executionOrders": [
+    {
+      "processIndex": 0,
+      "scenarioId": "zero-timer-race-control",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "timer-zero"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "execution-context-batching",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "synchronous",
+        "single-microtask",
+        "task-boundary"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "execution-context-batching",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "synchronous",
+        "single-microtask",
+        "task-boundary"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "state-update-queue",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "direct-values",
+        "functional-updaters"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "state-update-queue",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "direct-values",
+        "functional-updaters"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "same-value-updates",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "fresh-direct-same",
+        "fresh-updater-same",
+        "real-same-same",
+        "real-same-idle-same",
+        "real-same-real-same"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "same-value-updates",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "fresh-direct-same",
+        "fresh-updater-same",
+        "real-same-same",
+        "real-same-idle-same",
+        "real-same-real-same"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "flush-sync-boundary",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "automatic",
+        "flush-between"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "flush-sync-boundary",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "automatic",
+        "flush-between"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "flush-sync-boundary",
+      "pass": "behavior-frame",
+      "rotationIndex": 0,
+      "order": [
+        "automatic",
+        "flush-between"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "zero-timer-race-control",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "timer-zero"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "execution-context-batching",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "synchronous",
+        "single-microtask",
+        "task-boundary"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "execution-context-batching",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "synchronous",
+        "single-microtask",
+        "task-boundary"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "state-update-queue",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "direct-values",
+        "functional-updaters"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "state-update-queue",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "direct-values",
+        "functional-updaters"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "same-value-updates",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "fresh-direct-same",
+        "fresh-updater-same",
+        "real-same-same",
+        "real-same-idle-same",
+        "real-same-real-same"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "same-value-updates",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "fresh-direct-same",
+        "fresh-updater-same",
+        "real-same-same",
+        "real-same-idle-same",
+        "real-same-real-same"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "flush-sync-boundary",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "automatic",
+        "flush-between"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "flush-sync-boundary",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "automatic",
+        "flush-between"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "flush-sync-boundary",
+      "pass": "behavior-frame",
+      "rotationIndex": 0,
+      "order": [
+        "automatic",
+        "flush-between"
+      ]
+    }
+  ],
+  "evidenceProfile": [
+    "semantic"
+  ],
+  "enabledInstruments": {
+    "exact": [
+      "component-bodies",
+      "setter-wrappers",
+      "effects",
+      "refs",
+      "MutationObserver",
+      "Profiler",
+      "commit-hook"
+    ],
+    "behavior-log": [
+      "component-bodies",
+      "effects",
+      "refs"
+    ],
+    "behavior-frame": [
+      "requestAnimationFrame"
+    ]
+  },
+  "samplingBudgets": {
+    "exactIterations": 5,
+    "behaviorIterations": 1,
+    "microIterations": 8,
+    "microRotations": 5,
+    "responsiveIterations": 3,
+    "responsiveRotations": 3,
+    "processes": 2
+  },
+  "browserProcessCount": 2,
+  "resumeAttempts": [
+    {
+      "processIndex": 0,
+      "attemptIndex": 0,
+      "resumed": false,
+      "reusedCompleteAttempt": false
+    },
+    {
+      "processIndex": 1,
+      "attemptIndex": 0,
+      "resumed": false,
+      "reusedCompleteAttempt": false
+    }
+  ],
+  "cpu": [
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1500
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1500
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 584
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1700
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1199
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1199
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1200
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1200
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1199
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1198
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1199
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1200
+    }
+  ],
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "deviceScaleFactor": 1
+  },
+  "workloadSize": {
+    "phase": "0A",
+    "calibrated": false
+  },
+  "timeouts": {
+    "operationMs": 5000,
+    "previewStartupMs": 15000
+  },
+  "timestamp": "2026-08-16T11:58:22.336Z",
+  "workingTreeClean": true,
+  "workingTreeStatus": "",
+  "publishable": true,
+  "mode": "publication",
+  "expectedPins": {
+    "react": "19.2.8",
+    "reactDom": "19.2.8",
+    "scheduler": "0.27.0"
+  }
+}
