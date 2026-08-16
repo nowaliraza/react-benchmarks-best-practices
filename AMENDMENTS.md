@@ -51,3 +51,15 @@ This append-only ledger records prediction changes made after any relevant measu
 - Published finding affected: none; neither superseded Chapter 3 artifact was committed into the versioned release.
 - Interpretation: commit count is reproducible evidence; intermediate presentation is environment/timing-sensitive semantic evidence and is reported as variable.
 - Author: React Reality Lab implementation session.
+
+## Phase 2 concurrency-fixture calibration — 2026-08-17
+
+- Registry records: `urgent-transition-interruption`, `discarded-render-work`, `external-store-tearing`, and `sync-external-store-consistency`.
+- Prediction change: none.
+- Implementation change after exploratory data: the external host coordinator now waits until the first render-chunk probe before mutating the store; the planted urgent timer uses `flushSync` so interruption is deterministic.
+- Reason: a zero-delay timer fired before Transition rendering began, and a default-priority timer update did not preempt the in-progress Transition on the recorded runtime.
+- Data viewed beforehand: `artifacts/runs/2026-08-16T18-59-18-001Z`.
+- Replacement development calibration: `artifacts/runs/2026-08-16T19-03-14-897Z`.
+- Published finding affected: none; both artifacts are non-publishable development runs.
+- Registry clarification: applicability now states that the urgent update is forced with `flushSync`; expected relations and null criteria are unchanged.
+- Author: React Reality Lab implementation session.

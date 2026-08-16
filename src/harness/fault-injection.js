@@ -65,6 +65,13 @@ export const FAULT_CASES = Object.freeze([
     },
   },
   {
+    id: 'external-mutation-order', expectedCode: 'external-mutation-order', mutate: (artifact) => {
+      const lifecycle = findObservation(artifact, 'sync-external-store-consistency', 'sync-store', 'exact').observed.exact.lifecycle;
+      const mutation = lifecycle.find(({ event }) => event === 'external mutation');
+      mutation.event = 'external mutation planted outside window';
+    },
+  },
+  {
     id: 'non-deterministic-direction', expectedCode: 'non-deterministic-direction', mutate: (artifact) => {
       for (const row of artifact.observations.filter((candidate) => candidate.scenarioId === 'micro-calibration' && candidate.variantId === 'heavy' && candidate.pass === 'micro-timing')) {
         row.observed.micro.micro_total_ms = 0;

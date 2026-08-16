@@ -75,7 +75,7 @@ export function createBrowserRunner({ scenarioId, variantId, pass, root }) {
         refAttaches: events.filter(({ event }) => event === 'ref-attach').length,
         refDetaches: events.filter(({ event }) => event === 'ref-detach').length,
         lifecycle: events.map(({ event, at }) => ({ event, at })),
-        discardedWorkLowerBound: 0,
+        discardedWorkLowerBound: apiRef.current.discardedWorkLowerBound?.() ?? 0,
       },
     };
   }

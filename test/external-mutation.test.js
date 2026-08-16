@@ -23,4 +23,20 @@ describe('external mutation scheduling fixture', () => {
       'commit',
     ]);
   });
+
+  it('polls outside render until the first chunk probe becomes visible', async () => {
+    vi.useFakeTimers();
+    const order = [];
+    let firstChunkSeen = false;
+    scheduleExternalMutation({
+      ready: () => firstChunkSeen,
+      mark: (event) => order.push(event),
+      mutate: () => order.push('store changed'),
+    });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(order).toEqual([]);
+    firstChunkSeen = true;
+    await vi.runOnlyPendingTimersAsync();
+    expect(order).toEqual(['external mutation', 'store changed']);
+  });
 });

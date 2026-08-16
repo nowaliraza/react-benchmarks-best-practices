@@ -27,6 +27,7 @@ describe('Phase 0B fault-injection catalog', () => {
       'selection-regression',
       'missing-declared-difference',
       'tearing',
+      'external-mutation-order',
       'non-deterministic-direction',
       'instrument-leakage',
       'operation-timeout',

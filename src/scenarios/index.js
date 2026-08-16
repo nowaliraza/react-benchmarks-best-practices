@@ -15,6 +15,14 @@ import {
   StateUpdateQueue,
   StructuralSharing,
 } from './foundations.jsx';
+import {
+  CheapRenderHeavyCommit,
+  DiscardedRenderWork,
+  ExternalStoreTearing,
+  RenderHeavyCheapCommit,
+  SyncExternalStoreConsistency,
+  UrgentTransitionInterruption,
+} from './concurrency.jsx';
 
 export const scenarios = {
   'use-callback-semantics': UseCallbackScenario,
@@ -30,14 +38,12 @@ export const scenarios = {
   'state-update-queue': StateUpdateQueue,
   'same-value-updates': SameValueUpdates,
   'flush-sync-boundary': FlushSyncBoundary,
+  'render-heavy-cheap-commit': RenderHeavyCheapCommit,
+  'cheap-render-heavy-commit': CheapRenderHeavyCommit,
+  'urgent-transition-interruption': UrgentTransitionInterruption,
+  'discarded-render-work': DiscardedRenderWork,
+  'external-store-tearing': ExternalStoreTearing,
+  'sync-external-store-consistency': SyncExternalStoreConsistency,
 };
 
-// Fixture for concurrency scenarios: mutation is scheduled by the host task,
-// never called from a component body. The ordered marks let a scenario gate prove
-// that it landed between React-supplied render chunk callbacks.
-export function scheduleExternalMutation({ mutate, mark }) {
-  return setTimeout(() => {
-    mark('external mutation');
-    mutate();
-  }, 0);
-}
+export { scheduleExternalMutation } from './external-mutation.js';

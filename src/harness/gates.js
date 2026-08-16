@@ -31,6 +31,40 @@ export function intermediateFrameCount(scenarioId, behavior) {
   return behavior?.frames.filter(({ state }) => state === intermediateState).length ?? 0;
 }
 
+export function validateExternalMutationOrdering(lifecycle, details = {}) {
+  const events = lifecycle.map(({ event }) => event);
+  const first = events.indexOf('first render chunk');
+  const mutation = events.indexOf('external mutation');
+  const last = events.indexOf('last render chunk of the first pass');
+  const commit = events.indexOf('commit');
+  if (first === -1 || mutation === -1 || last === -1 || commit === -1
+    || !(first < mutation && mutation < last && last < commit)) {
+    return [issue(
+      'external-mutation-order',
+      'External mutation must occur between first-pass render chunks and before commit.',
+      { ...details, events },
+    )];
+  }
+  return [];
+}
+
+export function validateUrgentInterruptionOrdering(lifecycle, details = {}) {
+  const events = lifecycle.map(({ event }) => event);
+  const first = events.indexOf('first render chunk');
+  const setter = events.indexOf('urgent setter');
+  const urgentCommit = events.indexOf('urgent commit');
+  const transitionCommit = events.lastIndexOf('transition commit');
+  if (first === -1 || setter === -1 || urgentCommit === -1 || transitionCommit === -1
+    || !(first < setter && setter < urgentCommit && urgentCommit < transitionCommit)) {
+    return [issue(
+      'urgent-interruption-order',
+      'Urgent work must be scheduled after Transition render begins and commit before the Transition.',
+      { ...details, events },
+    )];
+  }
+  return [];
+}
+
 export function validateManifest(manifest, expected, { publication = false } = {}) {
   const issues = [];
   for (const field of REQUIRED_MANIFEST_FIELDS) {
@@ -116,6 +150,11 @@ function detectDeclaredDifferences(scenarioId, variantId, observations) {
     const count = observations.find((row) => row.pass === 'behavior-log')?.observed.behavior.state.count;
     if (count !== 0) labels.push('final count');
   }
+  if (['urgent-transition-interruption', 'discarded-render-work'].includes(scenarioId)
+    && ['urgent-interrupt', 'interrupted'].includes(variantId)) {
+    const urgent = observations.find((row) => row.pass === 'behavior-log')?.observed.behavior.state.urgent;
+    if (urgent === 1) labels.push('urgent state');
+  }
   return labels;
 }
 
@@ -165,7 +204,8 @@ export function validateObservations(registry, observations, operations = []) {
       const behaviorRows = rows.filter((row) => row.pass === 'behavior-log');
       for (const behaviorRow of behaviorRows) {
         const consistency = behaviorRow.observed.behavior?.consistency ?? {};
-        const values = Object.entries(consistency).filter(([key]) => key.endsWith('EqualsRight') || key === 'displayedEqualsState' || key === 'checksumFinite' || key === 'final');
+        const values = Object.entries(consistency).filter(([key]) => key.endsWith('EqualsRight')
+          || ['displayedEqualsState', 'checksumFinite', 'final', 'allCommitsConsistent'].includes(key));
         const failed = values.some(([, value]) => value !== true);
         const tearing = consistency.leftEqualsRight === false;
         if (failed && variant.expectedGateFailure) {
@@ -174,6 +214,23 @@ export function validateObservations(registry, observations, operations = []) {
           issues.push(issue(tearing ? 'tearing' : 'intra-variant-invariant', `Intra-variant invariant failed for ${scenario.id}/${variant.id}.`, { scenarioId: scenario.id, variantId: variant.id, consistency }));
         } else if (!failed && variant.expectedGateFailure) {
           issues.push(issue('planted-failure-missed', `Expected gate failure was not caught for ${scenario.id}/${variant.id}.`));
+        }
+      }
+
+      if (['external-store-tearing', 'sync-external-store-consistency'].includes(scenario.id)) {
+        for (const row of rows.filter((item) => item.pass === 'exact')) {
+          issues.push(...validateExternalMutationOrdering(row.observed.exact.lifecycle, {
+            scenarioId: scenario.id,
+            variantId: variant.id,
+          }));
+        }
+      }
+      if (scenario.id === 'urgent-transition-interruption' && variant.id === 'urgent-interrupt') {
+        for (const row of rows.filter((item) => item.pass === 'exact')) {
+          issues.push(...validateUrgentInterruptionOrdering(row.observed.exact.lifecycle, {
+            scenarioId: scenario.id,
+            variantId: variant.id,
+          }));
         }
       }
 
@@ -259,6 +316,19 @@ export function validateObservations(registry, observations, operations = []) {
     }
     if (responsiveRows.some((row) => row.observed.responsiveness.responsive_long_tasks.length === 0)) {
       issues.push(issue('long-task-calibration-failed', 'Planted block did not produce a Long Task entry.', { scenarioId: 'responsiveness-calibration' }));
+    }
+  }
+  if (registry.some(({ id }) => id === 'cheap-render-heavy-commit')) {
+    const rows = observations.filter((row) => row.scenarioId === 'cheap-render-heavy-commit' && row.pass === 'responsiveness');
+    for (const row of rows) {
+      if (!row.observed.responsiveness.responsive_long_tasks.some((duration) => duration >= 100)) {
+        issues.push(issue('commit-long-task-missing', 'Commit-heavy workload did not produce the preregistered Long Task.', {
+          scenarioId: row.scenarioId,
+          variantId: row.variantId,
+          processIndex: row.processIndex,
+          rotationIndex: row.rotationIndex,
+        }));
+      }
     }
   }
   return { issues, expectedRejections };

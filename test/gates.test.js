@@ -3,9 +3,11 @@ import config from '../lab.config.js';
 import {
   intermediateFrameCount,
   validateBehaviorControl,
+  validateExternalMutationOrdering,
   validateInstrumentIsolation,
   validateManifest,
   validateObservations,
+  validateUrgentInterruptionOrdering,
 } from '../src/harness/gates.js';
 
 const baseManifest = {
@@ -108,5 +110,21 @@ describe('presented intermediate semantics', () => {
     expect(intermediateFrameCount('flush-sync-boundary', {
       frames: [{ state: '1' }, { state: '2' }],
     })).toBe(1);
+  });
+});
+
+describe('concurrency ordering gates', () => {
+  it('requires an external mutation between render chunks and before commit', () => {
+    const valid = ['first render chunk', 'external mutation', 'last render chunk of the first pass', 'commit']
+      .map((event, at) => ({ event, at }));
+    expect(validateExternalMutationOrdering(valid)).toEqual([]);
+    expect(validateExternalMutationOrdering([valid[0], valid[2], valid[1], valid[3]])[0].code).toBe('external-mutation-order');
+  });
+
+  it('requires urgent work to commit before the interrupted Transition', () => {
+    const valid = ['first render chunk', 'urgent setter', 'urgent commit', 'transition commit']
+      .map((event, at) => ({ event, at }));
+    expect(validateUrgentInterruptionOrdering(valid)).toEqual([]);
+    expect(validateUrgentInterruptionOrdering([valid[0], valid[1], valid[3], valid[2]])[0].code).toBe('urgent-interruption-order');
   });
 });
