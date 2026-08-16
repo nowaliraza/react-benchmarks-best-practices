@@ -127,7 +127,7 @@ async function appendJsonLine(file, value) {
   await appendFile(file, `${JSON.stringify(value)}\n`);
 }
 
-async function runBrowserOperation(browser, item, scenario, variant) {
+async function runBrowserOperation(page, item, scenario, variant) {
   const excluded = scenario.status === 'excluded' || variant.excluded === true;
   if (excluded) {
     return {
@@ -139,7 +139,6 @@ async function runBrowserOperation(browser, item, scenario, variant) {
       observed: {},
     };
   }
-  const page = await browser.newPage({ viewport: config.viewport });
   const url = new URL(previewUrl);
   url.searchParams.set('scenario', item.scenarioId);
   url.searchParams.set('variant', item.variantId);
@@ -154,7 +153,7 @@ async function runBrowserOperation(browser, item, scenario, variant) {
       const instruments = await page.evaluate(() => window.__LAB__.instruments);
       return { value, instruments };
     },
-    cleanup: async () => page.close(),
+    cleanup: async () => page.evaluate(() => window.__LAB__?.cleanup()).catch(() => {}),
   });
   return {
     ...item,
@@ -236,6 +235,7 @@ export async function executeLab({ mode = 'fast', chapter = null, runId = timest
         args: ['--no-sandbox', '--disable-background-timer-throttling'],
       });
       chromeVersion = browser.version();
+      const page = await browser.newPage({ viewport: config.viewport });
       try {
         for (let index = 0; index < processItems.length; index += 1) {
           const item = { ...processItems[index], attemptIndex };
@@ -245,7 +245,7 @@ export async function executeLab({ mode = 'fast', chapter = null, runId = timest
           const progress = index === 0 || (index + 1) % 10 === 0 || index === processItems.length - 1;
           if (progress) process.stdout.write(`[process ${processIndex + 1}/${budget.processes}] ${index + 1}/${processItems.length} ${item.scenarioId}/${item.variantId}/${item.pass}\n`);
           try {
-            const row = await runBrowserOperation(browser, item, scenario, variant);
+            const row = await runBrowserOperation(page, item, scenario, variant);
             const operation = { id, processIndex, attemptIndex, status: 'completed', durationMs: row.durationMs };
             rawObservations.push(row);
             rawOperations.push(operation);
@@ -264,6 +264,7 @@ export async function executeLab({ mode = 'fast', chapter = null, runId = timest
           }
         }
       } finally {
+        await page.close().catch(() => {});
         await browser.close();
       }
     }
