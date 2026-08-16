@@ -8,6 +8,10 @@ export function buildVerdicts(registry, gate) {
       const inconclusive = related.some(({ code }) => ['non-deterministic-direction', 'missing-observation', 'missing-vectors', 'timeout', 'operation-failed'].includes(code));
       return { scenarioId: scenario.id, verdict: inconclusive ? 'inconclusive' : 'refuted', reasons: related.map(({ code, message }) => ({ code, message })) };
     }
+    const inconclusive = (gate.inconclusive ?? []).filter((entry) => entry.details?.scenarioId === scenario.id || entry.message.includes(scenario.id));
+    if (inconclusive.length > 0) {
+      return { scenarioId: scenario.id, verdict: 'inconclusive', reasons: inconclusive.map(({ code, message }) => ({ code, message })) };
+    }
     return { scenarioId: scenario.id, verdict: 'supported', reasons: [] };
   });
 }

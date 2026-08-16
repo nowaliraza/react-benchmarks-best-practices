@@ -31,6 +31,22 @@ function resolvedPackage(lock, name) {
   return lock.packages[`node_modules/${name}`]?.version ?? null;
 }
 
+function workloadSizeFor(registry) {
+  const chapters = [...new Set(registry.map(({ chapter }) => chapter))];
+  if (chapters.length === 1 && chapters[0] === 4) {
+    return {
+      phase: '2-concurrency', calibrated: true, renderItems: 240, renderItemMs: 0.55,
+      commitBlockMs: 120, storeItems: 160, storeItemMs: 0.55, urgentDelayMs: 12,
+    };
+  }
+  if (chapters.length === 1 && chapters[0] === 5) {
+    return {
+      phase: '3-effects', calibrated: true, memoNearIterations: 0, memoExpensiveIterations: 1_000_000,
+    };
+  }
+  return { phase: 'mixed-verification', calibrated: false, chapters };
+}
+
 export async function createManifest({
   mode,
   chromeVersion,
@@ -72,16 +88,7 @@ export async function createManifest({
     resumeAttempts,
     cpu: cpus().map(({ model, speed }) => ({ model, speedMHz: speed })),
     viewport: { width: 1280, height: 720, deviceScaleFactor: 1 },
-    workloadSize: {
-      phase: '2-concurrency',
-      calibrated: true,
-      renderItems: 240,
-      renderItemMs: 0.55,
-      commitBlockMs: 120,
-      storeItems: 160,
-      storeItemMs: 0.55,
-      urgentDelayMs: 12,
-    },
+    workloadSize: workloadSizeFor(registry),
     timeouts: { operationMs: timeoutMs, previewStartupMs: 15_000 },
     timestamp: new Date().toISOString(),
     workingTreeClean: repository.workingTreeClean,

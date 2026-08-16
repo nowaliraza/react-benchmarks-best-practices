@@ -65,6 +65,16 @@ export function validateUrgentInterruptionOrdering(lifecycle, details = {}) {
   return [];
 }
 
+export function validateLifecycleOrder(lifecycle, before, after, code, details = {}) {
+  const events = lifecycle.map(({ event }) => event);
+  const beforeIndex = events.indexOf(before);
+  const afterIndex = events.indexOf(after);
+  if (beforeIndex === -1 || afterIndex === -1 || beforeIndex >= afterIndex) {
+    return [issue(code, `${before} must precede ${after}.`, { ...details, events })];
+  }
+  return [];
+}
+
 export function validateManifest(manifest, expected, { publication = false } = {}) {
   const issues = [];
   for (const field of REQUIRED_MANIFEST_FIELDS) {
@@ -155,6 +165,15 @@ function detectDeclaredDifferences(scenarioId, variantId, observations) {
     const urgent = observations.find((row) => row.pass === 'behavior-log')?.observed.behavior.state.urgent;
     if (urgent === 1) labels.push('urgent state');
   }
+  const effectVariants = new Map([
+    ['derived-state-boundary', 'effect-derived'],
+    ['layout-effect-state-update', 'layout-effect'],
+    ['passive-effect-state-update', 'passive-effect'],
+  ]);
+  if (effectVariants.get(scenarioId) === variantId) {
+    const lifecycle = observations.find((row) => row.pass === 'behavior-log')?.observed.behavior.lifecycle ?? [];
+    if (lifecycle.some(({ event }) => event === 'effect-setup')) labels.push('effect lifecycle');
+  }
   return labels;
 }
 
@@ -175,6 +194,7 @@ function blockDirection(rows, leftVariant, rightVariant, pass, read, threshold) 
 export function validateObservations(registry, observations, operations = []) {
   const issues = [];
   const expectedRejections = [];
+  const inconclusive = [];
   if (observations.length === 0) issues.push(issue('empty-result', 'A run must contain observations.'));
   for (const operation of operations) {
     if (operation.status === 'timeout') issues.push(issue('timeout', `Operation ${operation.id} timed out.`, operation));
@@ -228,6 +248,22 @@ export function validateObservations(registry, observations, operations = []) {
       if (scenario.id === 'urgent-transition-interruption' && variant.id === 'urgent-interrupt') {
         for (const row of rows.filter((item) => item.pass === 'exact')) {
           issues.push(...validateUrgentInterruptionOrdering(row.observed.exact.lifecycle, {
+            scenarioId: scenario.id,
+            variantId: variant.id,
+          }));
+        }
+      }
+      if (scenario.id === 'effect-setup-cleanup-order') {
+        for (const row of rows.filter((item) => item.pass === 'exact')) {
+          issues.push(...validateLifecycleOrder(row.observed.exact.lifecycle, 'effect-cleanup', 'effect-setup', 'effect-order', {
+            scenarioId: scenario.id,
+            variantId: variant.id,
+          }));
+        }
+      }
+      if (scenario.id === 'ref-commit-timing') {
+        for (const row of rows.filter((item) => item.pass === 'exact')) {
+          issues.push(...validateLifecycleOrder(row.observed.exact.lifecycle, 'ref-attach', 'layout-effect-setup', 'ref-timing-order', {
             scenarioId: scenario.id,
             variantId: variant.id,
           }));
@@ -331,7 +367,28 @@ export function validateObservations(registry, observations, operations = []) {
       }
     }
   }
-  return { issues, expectedRejections };
+  if (registry.some(({ id }) => id === 'use-memo-crossover')) {
+    const rows = observations.filter((row) => row.scenarioId === 'use-memo-crossover');
+    const expensiveBlocks = blockDirection(rows, 'memo-expensive', 'direct-expensive', 'micro-timing', (row) => row.observed.micro.micro_total_ms, 0.25);
+    const microRows = rows.filter((row) => row.pass === 'micro-timing');
+    const median = (values) => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)];
+    const pooledDifference = median(microRows.filter((row) => row.variantId === 'direct-expensive').map((row) => row.observed.micro.micro_total_ms))
+      - median(microRows.filter((row) => row.variantId === 'memo-expensive').map((row) => row.observed.micro.micro_total_ms));
+    if (expensiveBlocks.some(({ passes }) => !passes) || !(pooledDifference > 0.25)) {
+      issues.push(issue('non-deterministic-direction', 'Expensive useMemo direction did not hold in every rotation/process block and the pooled result.', {
+        scenarioId: 'use-memo-crossover', blocks: expensiveBlocks, pooledDifference,
+      }));
+    }
+    const nearBlocks = blockDirection(rows, 'memo-near', 'direct-near', 'micro-timing', (row) => row.observed.micro.micro_total_ms, 0.05);
+    const nearPooledDifference = median(microRows.filter((row) => row.variantId === 'direct-near').map((row) => row.observed.micro.micro_total_ms))
+      - median(microRows.filter((row) => row.variantId === 'memo-near').map((row) => row.observed.micro.micro_total_ms));
+    if (nearBlocks.some(({ passes }) => !passes) || !(nearPooledDifference > 0.05)) {
+      inconclusive.push(issue('crossover-direction-unstable', 'Near-zero useMemo timing did not establish a stable direction above 0.05 ms.', {
+        scenarioId: 'use-memo-crossover', blocks: nearBlocks, pooledDifference: nearPooledDifference,
+      }));
+    }
+  }
+  return { issues, expectedRejections, inconclusive };
 }
 
 function expectedSamples(pass, budgets) {
@@ -385,5 +442,6 @@ export function validateRun({ registry, manifest, observations, operations, expe
       ...validateSampleCompleteness(registry, observations, manifest),
     ],
     expectedRejections: observationResult.expectedRejections,
+    inconclusive: observationResult.inconclusive,
   };
 }

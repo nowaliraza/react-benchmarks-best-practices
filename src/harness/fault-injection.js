@@ -72,6 +72,18 @@ export const FAULT_CASES = Object.freeze([
     },
   },
   {
+    id: 'effect-lifecycle-order', expectedCode: 'effect-order', mutate: (artifact) => {
+      const lifecycle = findObservation(artifact, 'effect-setup-cleanup-order', 'dependency-change', 'exact').observed.exact.lifecycle;
+      lifecycle.reverse();
+    },
+  },
+  {
+    id: 'ref-timing-order', expectedCode: 'ref-timing-order', mutate: (artifact) => {
+      const lifecycle = findObservation(artifact, 'ref-commit-timing', 'mount', 'exact').observed.exact.lifecycle;
+      lifecycle.reverse();
+    },
+  },
+  {
     id: 'non-deterministic-direction', expectedCode: 'non-deterministic-direction', mutate: (artifact) => {
       for (const row of artifact.observations.filter((candidate) => candidate.scenarioId === 'micro-calibration' && candidate.variantId === 'heavy' && candidate.pass === 'micro-timing')) {
         row.observed.micro.micro_total_ms = 0;

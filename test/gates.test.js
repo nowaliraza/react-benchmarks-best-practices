@@ -5,6 +5,7 @@ import {
   validateBehaviorControl,
   validateExternalMutationOrdering,
   validateInstrumentIsolation,
+  validateLifecycleOrder,
   validateManifest,
   validateObservations,
   validateUrgentInterruptionOrdering,
@@ -126,5 +127,13 @@ describe('concurrency ordering gates', () => {
       .map((event, at) => ({ event, at }));
     expect(validateUrgentInterruptionOrdering(valid)).toEqual([]);
     expect(validateUrgentInterruptionOrdering([valid[0], valid[1], valid[3], valid[2]])[0].code).toBe('urgent-interruption-order');
+  });
+});
+
+describe('effect and ref ordering gates', () => {
+  it('requires the named lifecycle events in order', () => {
+    const lifecycle = [{ event: 'effect-cleanup', at: 1 }, { event: 'effect-setup', at: 2 }];
+    expect(validateLifecycleOrder(lifecycle, 'effect-cleanup', 'effect-setup', 'effect-order')).toEqual([]);
+    expect(validateLifecycleOrder(lifecycle.toReversed(), 'effect-cleanup', 'effect-setup', 'effect-order')[0].code).toBe('effect-order');
   });
 });

@@ -75,3 +75,13 @@ This append-only ledger records prediction changes made after any relevant measu
 - Published finding affected: none; the copied dataset was moved to `/tmp/react-reality-phase2-superseded-1786907250808` before it was committed.
 - Replacement policy: rerun the complete Chapter 4 publication matrix from the corrected clean implementation commit.
 - Author: React Reality Lab implementation session.
+
+## Phase 3 Effect lifecycle control correction — 2026-08-17
+
+- Registry records: `derived-state-boundary`, `layout-effect-state-update`, and `passive-effect-state-update`.
+- Prediction change: none.
+- Control change after exploratory data: final markup, state, and DOM identity remain cross-variant equality controls; the intentionally different Effect lifecycle is now a declared difference instead of an equality dimension.
+- Reason: the original `behavior` comparison included lifecycle events and therefore rejected the very Effect setup evidence each scenario preregistered.
+- Data viewed beforehand: `artifacts/runs/2026-08-16T19-22-47-826Z`.
+- Published finding affected: none; the artifact is a dirty-tree development run.
+- Author: React Reality Lab implementation session.
