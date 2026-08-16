@@ -1,0 +1,582 @@
+{
+  "reactVersion": "19.2.8",
+  "reactDomVersion": "19.2.8",
+  "schedulerVersion": "0.27.0",
+  "chromeVersion": "145.0.7632.159",
+  "nodeVersion": "v22.12.0",
+  "buildType": "production",
+  "protocolVersion": "0.1.0",
+  "registryHash": "cf4d57be0c5403ce81d3a35f3c005d7dd1b08c6d94a2f93ce98ee3f72fba1013",
+  "registryCommit": "a753f7e98bea9065742fea4b8524d0834a1f5083",
+  "implementationCommit": "a753f7e98bea9065742fea4b8524d0834a1f5083",
+  "implementationBundleHash": "a3febfbd8537bea43857093d021a582b5564229cd15b8f12f56626f89ffab223",
+  "amendmentLogHash": "c0e1dc7d49ae38f8a354d15a7d54268a764d9c3a80030a70499000712aafb41b",
+  "scenarioCount": 8,
+  "variantCount": 16,
+  "executionOrders": [
+    {
+      "processIndex": 0,
+      "scenarioId": "use-memo-crossover",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "direct-near",
+        "memo-near",
+        "direct-expensive",
+        "memo-expensive"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "use-memo-crossover",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "direct-near",
+        "memo-near",
+        "direct-expensive",
+        "memo-expensive"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "use-memo-crossover",
+      "pass": "micro-timing",
+      "rotationIndex": 0,
+      "order": [
+        "direct-near",
+        "memo-near",
+        "direct-expensive",
+        "memo-expensive"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "use-memo-crossover",
+      "pass": "micro-timing",
+      "rotationIndex": 1,
+      "order": [
+        "memo-expensive",
+        "direct-expensive",
+        "memo-near",
+        "direct-near"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "use-memo-crossover",
+      "pass": "micro-timing",
+      "rotationIndex": 2,
+      "order": [
+        "memo-near",
+        "direct-expensive",
+        "memo-expensive",
+        "direct-near"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "use-memo-crossover",
+      "pass": "micro-timing",
+      "rotationIndex": 3,
+      "order": [
+        "direct-expensive",
+        "memo-near",
+        "direct-near",
+        "memo-expensive"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "use-memo-crossover",
+      "pass": "micro-timing",
+      "rotationIndex": 4,
+      "order": [
+        "direct-expensive",
+        "memo-expensive",
+        "direct-near",
+        "memo-near"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "derived-state-boundary",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "render-derived",
+        "effect-derived"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "derived-state-boundary",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "render-derived",
+        "effect-derived"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "layout-effect-state-update",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "render-direct",
+        "layout-effect"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "layout-effect-state-update",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "render-direct",
+        "layout-effect"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "passive-effect-state-update",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "render-direct",
+        "passive-effect"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "passive-effect-state-update",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "render-direct",
+        "passive-effect"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "effect-setup-cleanup-order",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "dependency-change"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "effect-setup-cleanup-order",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "dependency-change"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "ref-commit-timing",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "mount"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "ref-commit-timing",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "mount"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "identity-effect-churn",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "stable-dependency",
+        "recreated-dependency"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "identity-effect-churn",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "stable-dependency",
+        "recreated-dependency"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "identity-ref-churn",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "stable-callback-ref",
+        "inline-callback-ref"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "identity-ref-churn",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "stable-callback-ref",
+        "inline-callback-ref"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "use-memo-crossover",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "direct-near",
+        "memo-near",
+        "direct-expensive",
+        "memo-expensive"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "use-memo-crossover",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "direct-near",
+        "memo-near",
+        "direct-expensive",
+        "memo-expensive"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "use-memo-crossover",
+      "pass": "micro-timing",
+      "rotationIndex": 0,
+      "order": [
+        "direct-near",
+        "memo-near",
+        "direct-expensive",
+        "memo-expensive"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "use-memo-crossover",
+      "pass": "micro-timing",
+      "rotationIndex": 1,
+      "order": [
+        "memo-expensive",
+        "direct-expensive",
+        "memo-near",
+        "direct-near"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "use-memo-crossover",
+      "pass": "micro-timing",
+      "rotationIndex": 2,
+      "order": [
+        "memo-near",
+        "direct-expensive",
+        "memo-expensive",
+        "direct-near"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "use-memo-crossover",
+      "pass": "micro-timing",
+      "rotationIndex": 3,
+      "order": [
+        "direct-expensive",
+        "memo-near",
+        "direct-near",
+        "memo-expensive"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "use-memo-crossover",
+      "pass": "micro-timing",
+      "rotationIndex": 4,
+      "order": [
+        "direct-expensive",
+        "memo-expensive",
+        "direct-near",
+        "memo-near"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "derived-state-boundary",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "render-derived",
+        "effect-derived"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "derived-state-boundary",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "render-derived",
+        "effect-derived"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "layout-effect-state-update",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "render-direct",
+        "layout-effect"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "layout-effect-state-update",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "render-direct",
+        "layout-effect"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "passive-effect-state-update",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "render-direct",
+        "passive-effect"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "passive-effect-state-update",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "render-direct",
+        "passive-effect"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "effect-setup-cleanup-order",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "dependency-change"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "effect-setup-cleanup-order",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "dependency-change"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "ref-commit-timing",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "mount"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "ref-commit-timing",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "mount"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "identity-effect-churn",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "stable-dependency",
+        "recreated-dependency"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "identity-effect-churn",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "stable-dependency",
+        "recreated-dependency"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "identity-ref-churn",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "stable-callback-ref",
+        "inline-callback-ref"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "identity-ref-churn",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "stable-callback-ref",
+        "inline-callback-ref"
+      ]
+    }
+  ],
+  "evidenceProfile": [
+    "micro-timing",
+    "semantic"
+  ],
+  "enabledInstruments": {
+    "exact": [
+      "component-bodies",
+      "setter-wrappers",
+      "effects",
+      "refs",
+      "MutationObserver",
+      "Profiler",
+      "commit-hook"
+    ],
+    "behavior-log": [
+      "component-bodies",
+      "effects",
+      "refs"
+    ],
+    "micro-timing": [
+      "performance.now",
+      "Profiler",
+      "requestAnimationFrame"
+    ]
+  },
+  "samplingBudgets": {
+    "exactIterations": 5,
+    "behaviorIterations": 1,
+    "microIterations": 8,
+    "microRotations": 5,
+    "responsiveIterations": 3,
+    "responsiveRotations": 3,
+    "processes": 2
+  },
+  "browserProcessCount": 2,
+  "resumeAttempts": [
+    {
+      "processIndex": 0,
+      "attemptIndex": 0,
+      "resumed": false,
+      "reusedCompleteAttempt": false
+    },
+    {
+      "processIndex": 1,
+      "attemptIndex": 0,
+      "resumed": false,
+      "reusedCompleteAttempt": false
+    }
+  ],
+  "cpu": [
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1485
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1489
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1567
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1190
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1200
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1048
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 892
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1200
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1203
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1199
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1200
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1200
+    }
+  ],
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "deviceScaleFactor": 1
+  },
+  "workloadSize": {
+    "phase": "3-effects",
+    "calibrated": true,
+    "memoNearIterations": 0,
+    "memoExpensiveIterations": 1000000
+  },
+  "timeouts": {
+    "operationMs": 5000,
+    "previewStartupMs": 15000
+  },
+  "timestamp": "2026-08-16T19:26:58.469Z",
+  "workingTreeClean": true,
+  "workingTreeStatus": "",
+  "publishable": true,
+  "mode": "publication",
+  "expectedPins": {
+    "react": "19.2.8",
+    "reactDom": "19.2.8",
+    "scheduler": "0.27.0"
+  }
+}

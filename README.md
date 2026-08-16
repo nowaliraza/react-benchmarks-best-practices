@@ -2,7 +2,7 @@
 
 React Reality Lab turns React advice into preregistered, reproducible evidence. It separates component invocation, React commits, DOM mutation, browser presentation, synchronous cost, and main-thread responsiveness instead of treating “rendering” as one event.
 
-This repository implements **Phase 0A: the trusted kernel and tracer bullet**, **Phase 0B: prove the gate bites**, the published **Phase 1 foundations release**, the published **Phase 2 concurrency release**, and the preregistered **Phase 3 Effects and boundaries scenarios**. Published artifacts are tied to their exact manifests, implementation commits, and registry amendment history.
+This repository implements **Phase 0A: the trusted kernel and tracer bullet**, **Phase 0B: prove the gate bites**, and published **Phase 1 foundations**, **Phase 2 concurrency**, and **Phase 3 Effects and boundaries** releases. Published artifacts are tied to their exact manifests, implementation commits, and registry amendment history.
 
 ## Requirements
 
@@ -28,7 +28,7 @@ npm run results:merge
 - `--resume` reuses complete logical process attempts and reruns an interrupted process as a new physical-browser attempt. Partial JSONL is retained but excluded from verified summaries.
 - `results:merge` merges only complete, gate-clean runs with compatible manifests.
 
-Raw observations and operation journals are written incrementally under `artifacts/runs/<run-id>/`. A timeout or crash therefore leaves an auditable partial run. This directory is ignored by Git. Verified releases are versioned under [datasets/phase-1](datasets/phase-1) and [datasets/phase-2](datasets/phase-2), with reports at [reports/phase-1-foundations.md](reports/phase-1-foundations.md) and [reports/phase-2-concurrency.md](reports/phase-2-concurrency.md).
+Raw observations and operation journals are written incrementally under `artifacts/runs/<run-id>/`. A timeout or crash therefore leaves an auditable partial run. This directory is ignored by Git. Verified releases are versioned under [datasets/phase-1](datasets/phase-1), [datasets/phase-2](datasets/phase-2), and [datasets/phase-3](datasets/phase-3), with matching reports under [reports](reports).
 
 ## Boundary
 

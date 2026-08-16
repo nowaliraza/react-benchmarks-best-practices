@@ -24,3 +24,9 @@ The Phase 3 workload is frozen at zero iterations for the near-crossover calcula
 Effect and ref statements use ordered recorder events, public commit counts, public component probes, and DOM controls. They do not inspect Effect flags or commit internals.
 
 The `useMemo` scenarios treat caching only as a performance optimization. Their predictions follow React's public [`useMemo`](https://react.dev/reference/react/useMemo), [`useEffect`](https://react.dev/reference/react/useEffect), and [`useLayoutEffect`](https://react.dev/reference/react/useLayoutEffect) contracts.
+
+## Publication
+
+The clean Chapter 5 run at `artifacts/runs/2026-08-16T19-25-47-222Z` contains 512 observations, seven supported verdicts, one structured inconclusive verdict, and zero gate issues. It is tied to implementation commit `a753f7e98bea9065742fea4b8524d0834a1f5083`.
+
+The versioned release is in [`datasets/phase-3`](../datasets/phase-3/README.md), with findings in [`reports/phase-3-effects.md`](../reports/phase-3-effects.md).
