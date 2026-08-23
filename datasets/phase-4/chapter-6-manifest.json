@@ -1,0 +1,768 @@
+{
+  "reactVersion": "19.2.8",
+  "reactDomVersion": "19.2.8",
+  "schedulerVersion": "0.27.0",
+  "chromeVersion": "145.0.7632.159",
+  "nodeVersion": "v22.12.0",
+  "buildType": "matrix",
+  "buildTypes": [
+    "production",
+    "development",
+    "profiling"
+  ],
+  "protocolVersion": "0.1.0",
+  "registryHash": "e55d6735177137498f35289b07ed77eaf0fcc26f1226d646e82206c1cf776569",
+  "registryCommit": "1aeea70b4f09b90e84eb13613280556cb4bb8bc6",
+  "implementationCommit": "1aeea70b4f09b90e84eb13613280556cb4bb8bc6",
+  "implementationBundleHash": "9cc554bc8cda663868c0f4fb97a05fe1a7a87e7869f9a6d0939a3103a0651572",
+  "implementationBundleHashes": {
+    "production": "e532836a2ba362cb5f28730e88461472a68c3f75c5525360128aca5613d087f6",
+    "development": "bdf1692001f92b5c8089f0beffa4b5462925be631ce2c58dcf6fcbe789a6be89",
+    "profiling": "23ffc86353934a656773c42860ef61f8778c29d1f6e3e83079fc5e28caf0db89"
+  },
+  "amendmentLogHash": "c0e1dc7d49ae38f8a354d15a7d54268a764d9c3a80030a70499000712aafb41b",
+  "scenarioCount": 6,
+  "variantCount": 14,
+  "executionOrders": [
+    {
+      "processIndex": 0,
+      "scenarioId": "build-mode-semantics",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "production",
+        "development",
+        "strict-root",
+        "strict-subtree"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "build-mode-semantics",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "production",
+        "development",
+        "strict-root",
+        "strict-subtree"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "profiling-build-profiler",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "standard-production",
+        "profiling-build"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "profiling-build-profiler",
+      "pass": "micro-timing",
+      "rotationIndex": 0,
+      "order": [
+        "standard-production",
+        "profiling-build"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "profiling-build-profiler",
+      "pass": "micro-timing",
+      "rotationIndex": 1,
+      "order": [
+        "profiling-build",
+        "standard-production"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "profiling-build-profiler",
+      "pass": "micro-timing",
+      "rotationIndex": 2,
+      "order": [
+        "profiling-build",
+        "standard-production"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "profiling-build-profiler",
+      "pass": "micro-timing",
+      "rotationIndex": 3,
+      "order": [
+        "standard-production",
+        "profiling-build"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "profiling-build-profiler",
+      "pass": "micro-timing",
+      "rotationIndex": 4,
+      "order": [
+        "standard-production",
+        "profiling-build"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "react-profiler-overhead",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "profiler-off",
+        "profiler-on"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "react-profiler-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 0,
+      "order": [
+        "profiler-off",
+        "profiler-on"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "react-profiler-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 1,
+      "order": [
+        "profiler-on",
+        "profiler-off"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "react-profiler-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 2,
+      "order": [
+        "profiler-on",
+        "profiler-off"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "react-profiler-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 3,
+      "order": [
+        "profiler-off",
+        "profiler-on"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "react-profiler-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 4,
+      "order": [
+        "profiler-off",
+        "profiler-on"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "work-log-overhead",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "work-log-off",
+        "work-log-on"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "work-log-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 0,
+      "order": [
+        "work-log-off",
+        "work-log-on"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "work-log-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 1,
+      "order": [
+        "work-log-on",
+        "work-log-off"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "work-log-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 2,
+      "order": [
+        "work-log-on",
+        "work-log-off"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "work-log-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 3,
+      "order": [
+        "work-log-off",
+        "work-log-on"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "work-log-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 4,
+      "order": [
+        "work-log-off",
+        "work-log-on"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "mutation-observer-overhead",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "mutation-observer-off",
+        "mutation-observer-on"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "mutation-observer-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 0,
+      "order": [
+        "mutation-observer-off",
+        "mutation-observer-on"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "mutation-observer-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 1,
+      "order": [
+        "mutation-observer-on",
+        "mutation-observer-off"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "mutation-observer-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 2,
+      "order": [
+        "mutation-observer-on",
+        "mutation-observer-off"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "mutation-observer-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 3,
+      "order": [
+        "mutation-observer-off",
+        "mutation-observer-on"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "mutation-observer-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 4,
+      "order": [
+        "mutation-observer-off",
+        "mutation-observer-on"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "responsiveness-instrument-overhead",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "instruments-off",
+        "instruments-on"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "responsiveness-instrument-overhead",
+      "pass": "responsiveness",
+      "rotationIndex": 0,
+      "order": [
+        "instruments-off",
+        "instruments-on"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "responsiveness-instrument-overhead",
+      "pass": "responsiveness",
+      "rotationIndex": 1,
+      "order": [
+        "instruments-on",
+        "instruments-off"
+      ]
+    },
+    {
+      "processIndex": 0,
+      "scenarioId": "responsiveness-instrument-overhead",
+      "pass": "responsiveness",
+      "rotationIndex": 2,
+      "order": [
+        "instruments-on",
+        "instruments-off"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "build-mode-semantics",
+      "pass": "exact",
+      "rotationIndex": 0,
+      "order": [
+        "production",
+        "development",
+        "strict-root",
+        "strict-subtree"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "build-mode-semantics",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "production",
+        "development",
+        "strict-root",
+        "strict-subtree"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "profiling-build-profiler",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "standard-production",
+        "profiling-build"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "profiling-build-profiler",
+      "pass": "micro-timing",
+      "rotationIndex": 0,
+      "order": [
+        "standard-production",
+        "profiling-build"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "profiling-build-profiler",
+      "pass": "micro-timing",
+      "rotationIndex": 1,
+      "order": [
+        "profiling-build",
+        "standard-production"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "profiling-build-profiler",
+      "pass": "micro-timing",
+      "rotationIndex": 2,
+      "order": [
+        "profiling-build",
+        "standard-production"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "profiling-build-profiler",
+      "pass": "micro-timing",
+      "rotationIndex": 3,
+      "order": [
+        "standard-production",
+        "profiling-build"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "profiling-build-profiler",
+      "pass": "micro-timing",
+      "rotationIndex": 4,
+      "order": [
+        "standard-production",
+        "profiling-build"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "react-profiler-overhead",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "profiler-off",
+        "profiler-on"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "react-profiler-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 0,
+      "order": [
+        "profiler-off",
+        "profiler-on"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "react-profiler-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 1,
+      "order": [
+        "profiler-on",
+        "profiler-off"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "react-profiler-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 2,
+      "order": [
+        "profiler-on",
+        "profiler-off"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "react-profiler-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 3,
+      "order": [
+        "profiler-off",
+        "profiler-on"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "react-profiler-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 4,
+      "order": [
+        "profiler-off",
+        "profiler-on"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "work-log-overhead",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "work-log-off",
+        "work-log-on"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "work-log-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 0,
+      "order": [
+        "work-log-off",
+        "work-log-on"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "work-log-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 1,
+      "order": [
+        "work-log-on",
+        "work-log-off"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "work-log-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 2,
+      "order": [
+        "work-log-on",
+        "work-log-off"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "work-log-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 3,
+      "order": [
+        "work-log-off",
+        "work-log-on"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "work-log-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 4,
+      "order": [
+        "work-log-off",
+        "work-log-on"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "mutation-observer-overhead",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "mutation-observer-off",
+        "mutation-observer-on"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "mutation-observer-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 0,
+      "order": [
+        "mutation-observer-off",
+        "mutation-observer-on"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "mutation-observer-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 1,
+      "order": [
+        "mutation-observer-on",
+        "mutation-observer-off"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "mutation-observer-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 2,
+      "order": [
+        "mutation-observer-on",
+        "mutation-observer-off"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "mutation-observer-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 3,
+      "order": [
+        "mutation-observer-off",
+        "mutation-observer-on"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "mutation-observer-overhead",
+      "pass": "micro-timing",
+      "rotationIndex": 4,
+      "order": [
+        "mutation-observer-off",
+        "mutation-observer-on"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "responsiveness-instrument-overhead",
+      "pass": "behavior-log",
+      "rotationIndex": 0,
+      "order": [
+        "instruments-off",
+        "instruments-on"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "responsiveness-instrument-overhead",
+      "pass": "responsiveness",
+      "rotationIndex": 0,
+      "order": [
+        "instruments-off",
+        "instruments-on"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "responsiveness-instrument-overhead",
+      "pass": "responsiveness",
+      "rotationIndex": 1,
+      "order": [
+        "instruments-on",
+        "instruments-off"
+      ]
+    },
+    {
+      "processIndex": 1,
+      "scenarioId": "responsiveness-instrument-overhead",
+      "pass": "responsiveness",
+      "rotationIndex": 2,
+      "order": [
+        "instruments-on",
+        "instruments-off"
+      ]
+    }
+  ],
+  "evidenceProfile": [
+    "semantic",
+    "micro-timing",
+    "responsiveness"
+  ],
+  "enabledInstruments": {
+    "exact": [
+      "component-bodies",
+      "setter-wrappers",
+      "effects",
+      "refs",
+      "MutationObserver",
+      "Profiler",
+      "commit-hook"
+    ],
+    "behavior-log": [
+      "component-bodies",
+      "effects",
+      "refs"
+    ],
+    "micro-timing": [
+      "performance.now",
+      "Profiler",
+      "requestAnimationFrame",
+      "component-bodies",
+      "MutationObserver"
+    ],
+    "responsiveness": [
+      "performance.now",
+      "1ms-tick-sampler",
+      "PerformanceObserver:longtask"
+    ]
+  },
+  "samplingBudgets": {
+    "exactIterations": 5,
+    "behaviorIterations": 1,
+    "microIterations": 8,
+    "microRotations": 5,
+    "responsiveIterations": 3,
+    "responsiveRotations": 3,
+    "processes": 2
+  },
+  "browserProcessCount": 2,
+  "resumeAttempts": [
+    {
+      "processIndex": 0,
+      "attemptIndex": 0,
+      "resumed": false,
+      "reusedCompleteAttempt": false
+    },
+    {
+      "processIndex": 1,
+      "attemptIndex": 0,
+      "resumed": false,
+      "reusedCompleteAttempt": false
+    }
+  ],
+  "cpu": [
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 553
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 399
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1166
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 977
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1170
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 812
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1192
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1017
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1109
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1119
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1005
+    },
+    {
+      "model": "13th Gen Intel(R) Core(TM) i7-1355U",
+      "speedMHz": 1087
+    }
+  ],
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "deviceScaleFactor": 1
+  },
+  "workloadSize": {
+    "phase": "4-builds-observers",
+    "calibrated": true,
+    "observerItems": 500,
+    "responsivenessWorkMs": 10
+  },
+  "timeouts": {
+    "operationMs": 5000,
+    "previewStartupMs": 15000
+  },
+  "timestamp": "2026-08-16T20:29:03.145Z",
+  "workingTreeClean": true,
+  "workingTreeStatus": "",
+  "publishable": true,
+  "mode": "publication",
+  "expectedPins": {
+    "react": "19.2.8",
+    "reactDom": "19.2.8",
+    "scheduler": "0.27.0"
+  }
+}

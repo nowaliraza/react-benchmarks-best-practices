@@ -3,7 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>React Reality Lab — measured realm</title>
+    <meta name="description" content="Preregistered, reproducible evidence for observable React behavior." />
+    <meta name="theme-color" content="#eef3f5" />
+    <title>React Reality Lab</title>
     <script>
       // This hook must exist before ReactDOM is evaluated. It observes commits only;
       // the lab never reads fibers, lanes, flags, queues, or reconciler internals.
@@ -29,7 +31,7 @@
     </script>
   </head>
   <body>
-    <main id="measured-root"></main>
+    <main id="app-root"></main>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

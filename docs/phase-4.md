@@ -28,3 +28,7 @@ The first fast matrix at `artifacts/runs/2026-08-16T20-22-51-851Z` passed all pr
 Observer timing directions are deliberately not preregistered. The release quantifies the deltas and reports unstable or negligible differences without treating instrumentation as an application optimization.
 
 Development and Strict Mode evidence is never generalized to production. Responsiveness overhead remains in the responsiveness family and is not compared directly with micro-timing overhead.
+
+## Publication
+
+The clean Chapter 6 publication run at `artifacts/runs/2026-08-16T20-26-58-477Z` contains 744 completed observations across two fresh browser processes. All six verdicts are supported and the publication gate reports zero issues. The versioned evidence is in [`datasets/phase-4`](../datasets/phase-4/README.md), and the evidence-level findings are in [`reports/phase-4-builds-observers.md`](../reports/phase-4-builds-observers.md).

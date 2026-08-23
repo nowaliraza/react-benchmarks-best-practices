@@ -29,4 +29,4 @@ The scenario module also exports an external-mutation scheduling fixture that ru
 
 ## Deliberately deferred
 
-Phase 0A publishes no React performance claim. The full 28-scenario catalog, frozen concurrency workloads, findings pages, chapter reports, result browser, replay, and guided curriculum remain in Phases 1–5.
+Phase 0A publishes no React performance claim. The later phases now provide the 34-scenario catalog, frozen concurrency workloads, findings pages, chapter reports, result browser, recorded replay, and guided curriculum.

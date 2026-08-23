@@ -8,13 +8,14 @@
   },
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "vite build",
+    "build": "npm run viewer:data && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "test": "vitest run",
     "verify": "node scripts/verify.mjs",
     "fast": "node scripts/run.mjs --mode fast",
     "measure": "node scripts/run.mjs --mode publication",
-    "results:merge": "node scripts/merge-results.mjs"
+    "results:merge": "node scripts/merge-results.mjs",
+    "viewer:data": "node scripts/build-viewer-data.mjs"
   },
   "dependencies": {
     "react": "19.2.8",
