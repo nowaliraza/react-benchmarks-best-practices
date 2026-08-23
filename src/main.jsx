@@ -1,8 +1,8 @@
-const params = new URLSearchParams(location.search);
-const scenarioId = params.get('scenario');
+import { isMeasuredRealm } from './realm.js';
+
 const rootElement = document.querySelector('#app-root');
 
-if (scenarioId) {
+if (isMeasuredRealm(location.search)) {
   rootElement.id = 'measured-root';
   import('./measured.jsx');
 } else {

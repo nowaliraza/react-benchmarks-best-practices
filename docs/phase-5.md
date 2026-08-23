@@ -20,7 +20,9 @@ Six chapters teach the evidence model in order: instrument calibration, identity
 
 The entry module selects a realm before loading its implementation:
 
-- A URL with `scenario`, `variant`, and `pass` parameters loads only the measured runner and assigns `#measured-root`.
-- A URL without a scenario loads the evidence console and assigns `#viewer-root`.
+- A URL with non-empty `scenario`, `variant`, and `pass` parameters loads only the measured runner and assigns `#measured-root`.
+- Any other URL, including one whose measured parameters are incomplete or empty, loads the evidence console and assigns `#viewer-root`.
+
+The pre-React DevTools hook in `index.html` applies the same rule, so the measurement hook is installed on exactly the URLs that mount a measured root and the viewer realm is left to React Refresh.
 
 The two implementations are separate dynamic chunks. Measured pages still own exactly one React root, and the teaching UI never mounts beside a benchmark subject.

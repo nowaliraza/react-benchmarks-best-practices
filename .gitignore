@@ -6,3 +6,5 @@ artifacts/merged/
 playwright-report/
 test-results/
 *.log
+.claude
+.github

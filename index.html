@@ -10,8 +10,12 @@
     <script>
       // This hook must exist before ReactDOM is evaluated. It observes commits only;
       // the lab never reads fibers, lanes, flags, queues, or reconciler internals.
+      // The realm rule below is the inline copy of src/realm.js: only a URL that
+      // names a scenario, a variant, and a pass is a measured realm. The viewer
+      // realm is left untouched so React Refresh can install its own hook.
       (() => {
-        if (!new URLSearchParams(location.search).has('scenario')) return;
+        const params = new URLSearchParams(location.search);
+        if (!['scenario', 'variant', 'pass'].every((name) => (params.get(name) ?? '') !== '')) return;
         const renderers = new Map();
         const commits = [];
         window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
